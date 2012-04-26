@@ -3,7 +3,7 @@ package entities;
 import java.util.ArrayList;
 import simulatorengine.Environment;
 
-import simulatorengine.ProfileParser;
+import simulatorengine.Profile;
 
 public class SimulationUnit {
     /**
@@ -28,16 +28,16 @@ public class SimulationUnit {
      */
     private int type;
 
-    /**class som kan parse profile files
+    /**class som kan parse profile files og holde rede på egenskaper
      */
-    private ProfileParser parser;
+    private Profile profile;
     
     /**
      * oppsetter nytt profil
      * @param path to file with profile
      */
     public void setProfile(String path) {
-            this.parser = new ProfileParser(path); 
+            this.profile = new Profile(path); 
     }
     
 }
