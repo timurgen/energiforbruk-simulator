@@ -1,0 +1,11 @@
+//General info
+//area of building i kvadrattmeter
+area=250
+//1 - enebolig, 2 - rekkehus, 3 - leilghet
+type=2
+//byggearea, sør-Norge, Nord-Norge osv, ikke implementert
+
+//belysning
+lys=50
+//kjøkkenutstyr
+oven=500
