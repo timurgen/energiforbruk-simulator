@@ -1,5 +1,8 @@
 package units;
-
+/**
+ * Subklasser av denne klassen brukes til å 
+ * beregne strømforbruk til forskjellige enheter vha predefinerte stndardverier
+ */
 import java.io.Serializable;
 
 public class StandartUnit implements Serializable{
@@ -46,12 +49,6 @@ public class StandartUnit implements Serializable{
     public StandartUnit(double area) {
         this.area = area;
     }
-    
-
-    
-
-    
-    
 
     public double getEquipment () {
         return equipment;
