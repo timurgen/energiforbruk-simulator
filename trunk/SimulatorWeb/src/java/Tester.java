@@ -21,11 +21,11 @@ public class Tester {
         sim1.addWall(wall_2);
         sim1.addWall(wall_3);
         sim1.addWall(wall_4);
-        //sim1.addWall(roof);
-        //sim1.addFloor(floor);
+        sim1.addWall(roof);
+        sim1.addFloor(floor);
         double loss = sim1.computeHeatLoss(22, -15);
         //System.out.println(loss);
-        double[] a = {11.0,7.0,11.0,6.0,15.0,4.0,13.0,12.0,11.0,0.0,3.0,4.0,5.0};
+        double[] a = {28D,28D,28D,28D,28D,28D,30D,30D,31D,27D,27D};
         sim1.setTempDiff(a);
         Double[] b = sim1.computeConsumption(a.length);
         for(Double c : b){
