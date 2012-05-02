@@ -8,39 +8,84 @@ import java.text.DecimalFormat;
 
 /**
  *
- * @author obu
+ * @author 490501
  */
 public class MainApplet extends java.applet.Applet {
     private DecimalFormat df; //skrive ut tallene med to desimaler
-    private double area; //area of simulation unit
+    private double area; //area of simulation unit (gulvareal)
     private double high; //høyde av tak
     private double volume; // vollum av hus
     private double windowsArea;// felles vinduareal i hus
+    private double wallArea; //areal av alle vegger + gulv + tak 
     private double utak, uGulv, uVegger, uVinduer; //u verdier til forskjellige elementer 
     private double tempInside, tempOutside; //innetemperatur og temperatur ute
+    private double averageTemp; //ars gjennomsnittlig temperatur i C
+    double ventilationLoss; //ventilasjonsvarmetap
+    double t; // tid i sekunder
+    
 
 
     /**
      * Initializes the applet MainApplet
      */
     public void init() {
-        df = new DecimalFormat("#.##");
+        df = new DecimalFormat("#.#");
         try {
             java.awt.EventQueue.invokeAndWait(new Runnable() {
 
                 public void run() {
                     initComponents();
+                    beregnForbruk();
                 }
             });
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    
+    /**
+     * 
+     */
     public void beregnForbruk() {
         //beregner vollum av enhet
         this.volume = this.area * this.high;
+        //plukker ut vinduareal
+        //antar at enhet har kvadratform for å beregne perimeter
+        //antar at enebolig har 4 yttrevegg + tak + gulv
+        //antar at rekkehus har 2 yttrevegg + tak + gulv
+        //antar at leilighet har 1 yttervegg og varm tak og gulv
+        double r = Math.sqrt(this.area/2);
+        double perimeter = 4*Math.sqrt(2*r);
+        this.wallArea = perimeter * this.high - this.windowsArea;
+        double difference = this.tempInside - this.averageTemp;
+        double lossHeat = 0.00;
+        switch(this.boxBuildingType.getSelectedIndex()) {
+            case 0://enebolig
+                lossHeat = ((difference * area * this.uGulv) + (difference * area * this.utak) + (difference * this.wallArea * this.uVegger) + (difference * this.windowsArea * this.uVinduer));
+                break;
+            case 1://rekkehus
+                lossHeat = ((difference * area * this.uGulv) + (difference * area * this.utak) + (difference * (this.wallArea/2) * this.uVegger) + (difference * this.windowsArea * this.uVinduer));
+                break;
+            case 2://leilighet
+                lossHeat = ( (difference * (this.wallArea/4) * this.uVegger) + (difference * this.windowsArea * this.uVinduer));
+                break;
+        }
+            
+        
+        //ventilasjonstap = (tetthet(kg/m^3) * vollum(m^3))/(29 g/moll)*((T1-T2)*7/2*R(gasskonstant))/t(tid i sekunder)
+        //antar at ved naturlig ventilasjon luft byttes hver 2,5 timer
+        //antar at ved avtrekk luft byttes hver 1 time
+        //antar lufttetthet = sørNorge = 1,2466; midt-Norge = 1,2690; Nordland, Troms og Finmark = 1,2920
+        double mm = 0.029;//molarmass kg/moll
+        double R = 8.3144621;//gasskonstant G/moll
+        double tetthet = 1.2754;
+        if(this.boxBuildingsArea.getSelectedIndex() == 0) {tetthet = 1.2466;}
+        else if(this.boxBuildingsArea.getSelectedIndex() == 1){tetthet = 1.2690;}
+        else if(this.boxBuildingsArea.getSelectedIndex() == (2 | 3)){tetthet = 1.2920;}
+        ventilationLoss = (tetthet*this.volume)/mm*((this.sliderTemperatureInside.getValue() - this.averageTemp)*7/2*R)/t;
+        //viser resultater
+        this.labelvarmeTap.setText("<html>Transmisjonsvarmetap: "+df.format(lossHeat/1000)+ " kW/T</html>");
         this.labelVolume.setText("<html>Vollum: "+df.format(this.volume)+ " m<sup>3</sup></html>");
+        this.labelVentLoss.setText("<html>Ventilasjonstap: "+df.format(this.ventilationLoss/1000)+ " kW/T</html>");
     }
 
     /**
@@ -77,12 +122,15 @@ public class MainApplet extends java.applet.Applet {
         jSlider2 = new javax.swing.JSlider();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        boxVentilation = new javax.swing.JComboBox();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         labelVolume = new javax.swing.JLabel();
         labelvarmeTap = new javax.swing.JLabel();
+        labelVentLoss = new javax.swing.JLabel();
 
         setStub(null);
 
@@ -119,7 +167,7 @@ public class MainApplet extends java.applet.Applet {
             }
         });
 
-        sliderFloorArea.setMaximum(1000);
+        sliderFloorArea.setMaximum(300);
         sliderFloorArea.setValue(0);
         sliderFloorArea.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -215,6 +263,15 @@ public class MainApplet extends java.applet.Applet {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jLabel11.setText("Ventilasjon");
+
+        boxVentilation.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Naturlig", "Avtrekk" }));
+        boxVentilation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boxVentilationActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPaneHomeLayout = new javax.swing.GroupLayout(jPaneHome);
         jPaneHome.setLayout(jPaneHomeLayout);
         jPaneHomeLayout.setHorizontalGroup(
@@ -227,7 +284,9 @@ public class MainApplet extends java.applet.Applet {
                     .addComponent(jLabel2)
                     .addComponent(boxBuildingsArea, 0, 120, Short.MAX_VALUE)
                     .addComponent(boxBuildingType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3))
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel11)
+                    .addComponent(boxVentilation, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(jPaneHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPaneHomeLayout.createSequentialGroup()
@@ -300,13 +359,18 @@ public class MainApplet extends java.applet.Applet {
                                 .addComponent(labelWindowsArea, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(6, 6, 6)))
                         .addGap(12, 12, 12)))
-                .addGroup(jPaneHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPaneHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPaneHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPaneHomeLayout.createSequentialGroup()
+                            .addComponent(jLabel7)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(sliderTemperatureInside, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(labelTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPaneHomeLayout.createSequentialGroup()
-                        .addComponent(jLabel7)
+                        .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sliderTemperatureInside, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(labelTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(346, Short.MAX_VALUE))
+                        .addComponent(boxVentilation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(291, Short.MAX_VALUE))
         );
 
         jPaneMain.addTab("Oppvarming", jPaneHome);
@@ -319,7 +383,7 @@ public class MainApplet extends java.applet.Applet {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 575, Short.MAX_VALUE)
+            .addGap(0, 520, Short.MAX_VALUE)
         );
 
         jPaneMain.addTab("Belysning", jPanel2);
@@ -332,7 +396,7 @@ public class MainApplet extends java.applet.Applet {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 575, Short.MAX_VALUE)
+            .addGap(0, 520, Short.MAX_VALUE)
         );
 
         jPaneMain.addTab("Utstyr", jPanel3);
@@ -345,7 +409,7 @@ public class MainApplet extends java.applet.Applet {
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 575, Short.MAX_VALUE)
+            .addGap(0, 520, Short.MAX_VALUE)
         );
 
         jPaneMain.addTab("Vann", jPanel5);
@@ -358,15 +422,19 @@ public class MainApplet extends java.applet.Applet {
         labelvarmeTap.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         labelvarmeTap.setText("Transmisjonsvarmetap:");
 
+        labelVentLoss.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        labelVentLoss.setText("Ventilasjonstap:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelvarmeTap, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(labelvarmeTap, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                    .addComponent(labelVentLoss, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(labelVolume, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -376,7 +444,9 @@ public class MainApplet extends java.applet.Applet {
                 .addComponent(labelVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labelvarmeTap, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labelVentLoss, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -392,7 +462,7 @@ public class MainApplet extends java.applet.Applet {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPaneMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPaneMain, javax.swing.GroupLayout.PREFERRED_SIZE, 545, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -417,10 +487,31 @@ public class MainApplet extends java.applet.Applet {
     }//GEN-LAST:event_sliderFloorAreaStateChanged
 
     private void boxBuildingTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxBuildingTypeActionPerformed
+        //Vi antar her at enebolig har 4 yttrevegg, rekkehus har 2 yttrevegg, og leilghet hsr kun en yttervegg+ har varm tak og gulv slik at vi 
+        //slipper det ved beregning
         beregnForbruk();
     }//GEN-LAST:event_boxBuildingTypeActionPerformed
 
     private void boxBuildingsAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxBuildingsAreaActionPerformed
+        /**
+         * Må ha tallene , nå dtår tallene fra tak
+         */
+        int i = this.boxBuildingsArea.getSelectedIndex();
+        switch(i) {
+            case 0: //sørNorge
+                this.averageTemp = 6;
+                break;
+            case 1: //midtNorge
+                this.averageTemp = 3;
+                break;
+            case 2: //Nordland og Troms
+                this.averageTemp = 1.1;
+                break;
+            case 3: //Finmark
+                this.averageTemp = 0.5;
+                break;
+                
+        }
         beregnForbruk();
     }//GEN-LAST:event_boxBuildingsAreaActionPerformed
 
@@ -464,14 +555,25 @@ public class MainApplet extends java.applet.Applet {
 
     private void sliderTemperatureInsideStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliderTemperatureInsideStateChanged
         this.labelTemp.setText(String.valueOf("<html>"+this.sliderTemperatureInside.getValue()+" C<sup>o</sup></html>"));
+        this.tempInside = this.sliderTemperatureInside.getValue();
+        beregnForbruk();
     }//GEN-LAST:event_sliderTemperatureInsideStateChanged
+
+    private void boxVentilationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxVentilationActionPerformed
+        t = (this.boxVentilation.getSelectedIndex() == 1) ? 3600 : 3600*2.5;       
+        beregnForbruk();
+        
+
+    }//GEN-LAST:event_boxVentilationActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox boxBuildingType;
     private javax.swing.JComboBox boxBuildingYear;
     private javax.swing.JComboBox boxBuildingsArea;
+    private javax.swing.JComboBox boxVentilation;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -492,6 +594,7 @@ public class MainApplet extends java.applet.Applet {
     private javax.swing.JLabel labelFloorArea;
     private javax.swing.JLabel labelHoyede;
     private javax.swing.JLabel labelTemp;
+    private javax.swing.JLabel labelVentLoss;
     private javax.swing.JLabel labelVolume;
     private javax.swing.JLabel labelWindowsArea;
     private javax.swing.JLabel labelvarmeTap;

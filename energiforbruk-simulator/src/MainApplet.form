@@ -33,7 +33,7 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jPaneMain" min="-2" max="-2" attributes="0"/>
+              <Component id="jPaneMain" min="-2" pref="545" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel1" max="32767" attributes="0"/>
           </Group>
@@ -82,6 +82,8 @@
                           <Component id="boxBuildingsArea" alignment="0" pref="120" max="32767" attributes="0"/>
                           <Component id="boxBuildingType" alignment="0" max="32767" attributes="0"/>
                           <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="boxVentilation" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -175,15 +177,22 @@
                               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="sliderTemperatureInside" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="sliderTemperatureInside" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="labelTemp" min="-2" pref="24" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="labelTemp" min="-2" pref="24" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="boxVentilation" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace pref="346" max="32767" attributes="0"/>
+                      <EmptySpace pref="291" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -249,7 +258,7 @@
             </Component>
             <Component class="javax.swing.JSlider" name="sliderFloorArea">
               <Properties>
-                <Property name="maximum" type="int" value="1000"/>
+                <Property name="maximum" type="int" value="300"/>
                 <Property name="value" type="int" value="0"/>
               </Properties>
               <Events>
@@ -406,6 +415,24 @@
                 </Component>
               </SubComponents>
             </Container>
+            <Component class="javax.swing.JLabel" name="jLabel11">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Ventilasjon"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="boxVentilation">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="2">
+                    <StringItem index="0" value="Naturlig"/>
+                    <StringItem index="1" value="Avtrekk"/>
+                  </StringArray>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="boxVentilationActionPerformed"/>
+              </Events>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="jPanel2">
@@ -425,7 +452,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="575" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="520" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -447,7 +474,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="575" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="520" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -469,7 +496,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="575" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="520" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -490,9 +517,10 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="labelVolume" min="-2" pref="135" max="-2" attributes="0"/>
-                      <Component id="labelvarmeTap" min="-2" pref="207" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="labelvarmeTap" pref="252" max="32767" attributes="0"/>
+                      <Component id="labelVentLoss" alignment="0" max="32767" attributes="0"/>
+                      <Component id="labelVolume" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -505,7 +533,9 @@
                   <Component id="labelVolume" min="-2" pref="24" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="labelvarmeTap" min="-2" pref="24" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="labelVentLoss" min="-2" pref="25" max="-2" attributes="0"/>
+                  <EmptySpace pref="35" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -525,6 +555,14 @@
               <Font name="Tahoma" size="11" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Transmisjonsvarmetap:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="labelVentLoss">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Tahoma" size="11" style="1"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Ventilasjonstap:"/>
           </Properties>
         </Component>
       </SubComponents>
