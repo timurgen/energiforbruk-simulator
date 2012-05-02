@@ -1,4 +1,6 @@
 
+import interfaces.PowerComputer;
+import interfaces.HeatLoss;
 import java.util.ArrayList;
 
 
