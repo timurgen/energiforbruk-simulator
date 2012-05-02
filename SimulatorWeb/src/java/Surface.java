@@ -14,9 +14,9 @@ import java.util.ArrayList;
  */
 public class Surface implements PowerComputer, HeatLoss{
 
-    private double dimX; //width
+    private double dimX; //width in mm
 
-    private double dimY; //high
+    private double dimY; //high in mm
     
     private double square; // square of entity
 
