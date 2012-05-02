@@ -1,4 +1,6 @@
 
+import interfaces.PowerComputer;
+import interfaces.HeatLoss;
 import exceptions.OversizedException;
 import java.util.ArrayList;
 
