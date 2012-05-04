@@ -3,6 +3,8 @@ import entities.Surface;
 import entities.SimulationUnit;
 import entities.Ventilation;
 import exceptions.OversizedException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -35,10 +37,15 @@ public class Tester {
 //        System.out.println(c);
 //    }
         
-        Ventilation v = new Ventilation(1.27, 350, 5000, 0.3);
+        Ventilation v = new Ventilation(1.29, 6*5*3, 3000, 0.1);
         v.setTempInside(20);
-        v.setTempDiff(30);
-        System.out.println(v.getAirFlowRate()/1000); //m^3/s
+        v.setTempDiff(5);
+        try {
+            System.out.println(v.getAirFlowRate()); //m^3/s
+            System.out.println(v.getVentilationRate());
+        } catch (Exception ex) {
+            Logger.getLogger(Tester.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }
 }

@@ -37,6 +37,7 @@ public class Ventilation implements HeatLoss{
     private double heightOfPipe; // height between inlet and outlet in natural ventilation in milimeter
     private double areaOfOpening; //cross-sectional area of opening, m^2 (assumes equal area for inlet and outlet)
     private double airFlowRate; //ventilation airflow rate, m³/s
+    private double ventilationRate; //air changes per hour
     /**************************************************************************/
     
     
@@ -72,7 +73,9 @@ public class Ventilation implements HeatLoss{
 
     @Override
     public double computeHeatLoss(double tempDifference) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //ventilationLoss = (tetthet*this.volume)/mm*((this.sliderTemperatureInside.getValue() - this.averageTemp)*7/2*R)/t;
+        return (this.densityOfAir*this.volume)/MOLARMASS*(tempDifference*7/2*R)/this.ventilationRate;
+        
     }
 
     @Override
@@ -81,11 +84,23 @@ public class Ventilation implements HeatLoss{
     }
     /**
      * 
-     * @return computed airflow rate in m^3/s
+     * @return computed airflow rate in m^3/s for natural ventilation
+     * 
      */
-    public double getAirFlowRate() {
-        this.airFlowRate = CD * this.areaOfOpening * Math.sqrt(g*this.heightOfPipe*(this.tempDiff/this.tempInside)); //m^3/s
+    public double getAirFlowRate() throws Exception {
+        if(this.tempInside <= 0)
+            throw new Exception("Inside temperature must be greater than zero");
+        this.airFlowRate = CD * this.areaOfOpening * Math.sqrt(g*(this.heightOfPipe/1000)*(this.tempDiff/this.tempInside)); //m^3/s
         return this.airFlowRate;
+    }
+
+    /**
+     * 
+     * @return air changes per hour
+     * @throws Exception if parameter tempInside in getAirFlowRate equal or less than zero;
+     */
+    public double getVentilationRate() throws Exception {
+        return (3600*getAirFlowRate())/this.volume;
     }
 
     /***************************************************************************
