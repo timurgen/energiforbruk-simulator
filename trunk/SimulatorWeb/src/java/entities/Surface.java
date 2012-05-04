@@ -1,3 +1,5 @@
+package entities;
+
 
 import interfaces.PowerComputer;
 import interfaces.HeatLoss;

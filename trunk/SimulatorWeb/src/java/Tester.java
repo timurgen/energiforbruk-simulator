@@ -1,4 +1,6 @@
 
+import entities.Surface;
+import entities.SimulationUnit;
 import exceptions.OversizedException;
 
 /**
