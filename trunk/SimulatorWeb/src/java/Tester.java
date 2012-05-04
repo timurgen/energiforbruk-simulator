@@ -1,6 +1,7 @@
 
 import entities.Surface;
 import entities.SimulationUnit;
+import entities.Ventilation;
 import exceptions.OversizedException;
 
 /**
@@ -33,7 +34,11 @@ public class Tester {
 //        for(Double c : b){
 //        System.out.println(c);
 //    }
-
+        
+        Ventilation v = new Ventilation(1.27, 350, 5000, 0.3);
+        v.setTempInside(20);
+        v.setTempDiff(30);
+        System.out.println(v.getAirFlowRate()/1000); //m^3/s
         
     }
 }
