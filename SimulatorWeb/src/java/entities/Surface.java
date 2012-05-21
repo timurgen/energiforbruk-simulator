@@ -1,16 +1,28 @@
+/******************************************************************************
+ * class represents an outer surface in a simulation unit, such as wall, floor or roof
+ * beregning av varmetap gjennom vegger skal utføres med hensyn til yttreflater
+ * som har forskjellig temperatur på ytterside og inne.
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ ******************************************************************************/
+
 package entities;
 
 
-import interfaces.PowerComputer;
-import interfaces.HeatLoss;
 import exceptions.OversizedException;
+import interfaces.HeatLoss;
+import interfaces.PowerComputer;
 import java.util.ArrayList;
 
 
 /**
  * 
  * @author 490501
- * class represents an outer surface in a simulation unit, such as wall, floor or roof
+ * @version 1.0.1
  * 
  * OBS! alle tall gitt i: lengde - mm; U verdi - W/m^2*K
  */
@@ -20,17 +32,18 @@ public class Surface implements PowerComputer, HeatLoss{
 
     private double dimY; //high in mm
     
-    private double square; // square of entity
+    private double square; // square of entity in m^2
 
-    private double uValue;//Overall heat transfer coefficient
+    private double uValue;//Overall heat transfer coefficient W/m^2*K
 
     private char orientation;//south, norh, west, east
     
-    private double tempDifference; //difference between tempereture innside and outside
+    private double tempDifference; //difference between tempereture innside and outside grades Celsius
     
-    private double[] tempDifferences;//differences between tempereture innside and outside
+    private double[] tempDifferences;//differences between tempereture innside and outside grades Celsius
     /**
      * uses if surface represents wall with windows, or roof with windows
+     * hver enkel vinde representeres akkurat på det samme måte som vegg
      */
     private ArrayList<Surface> windows; 
     /**************************************************************************/
@@ -56,7 +69,7 @@ public class Surface implements PowerComputer, HeatLoss{
     public Surface(double dimX, double dimY) {
         this.dimX = dimX; //mm
         this.dimY = dimY; //mm
-        this.square = this.dimX*this.dimY; //mm^2
+        this.square = (this.dimX*this.dimY)/1000000; //m^2
         this.uValue = 1.0;//1 watt per m^2*K
         this.tempDifferences = new double[0];
         
@@ -71,7 +84,7 @@ public class Surface implements PowerComputer, HeatLoss{
     public Surface(double dimX, double dimY, double uValue) {
         this.dimX = dimX; //mm
         this.dimY = dimY; //mm
-        this.square = this.dimX*this.dimY; //mm^2
+        this.square = (this.dimX*this.dimY)/1000000; //m^2
         this.uValue = uValue;//1 watt per m^2*K
         this.tempDifferences = new double[0];
         
@@ -88,7 +101,7 @@ public class Surface implements PowerComputer, HeatLoss{
         windows = new ArrayList<Surface>();
         this.dimX = dimX; //mm
         this.dimY = dimY; //mm
-        this.square = this.dimX*this.dimY; // in mm^2
+        this.square = (this.dimX*this.dimY)/1000000; // in m^2
         this.uValue = uValue;//1 watt per m^2*K     
         this.windows.add(window);//vindu
         this.tempDifferences = new double[0];
@@ -142,7 +155,7 @@ public class Surface implements PowerComputer, HeatLoss{
             this.tempDifference = tempInside + Math.abs(tempOutside);
         else
             this.tempDifference = tempInside  - tempOutside;
-        return this.computeHeatLoss(tempDifference);//Watt
+        return this.computeHeatLoss(tempDifference);//Watt per surface
     }
     
     /**
@@ -159,11 +172,11 @@ public class Surface implements PowerComputer, HeatLoss{
             for(int i = 0; i < this.windows.size(); i++) {
                 winHeatLoss += this.windows.get(i).computeHeatLoss(this.tempDifference);//summerer varmetap fra alle vinduer
             }
-            result = ((this.square - this.countSquareOfWindows())/1000000) * this.uValue * this.tempDifference + winHeatLoss;
+            result = ((this.square - this.countSquareOfWindows())) * this.uValue * this.tempDifference + winHeatLoss;
             
         }
         else {
-            result = (this.square/1000000) * this.uValue * this.tempDifference;//deler på 10000 fordi vi har areal i mm^2 og trenger resultat i w/m^2*K, where K = tempDifference
+            result = (this.square) * this.uValue * this.tempDifference;
         }
         return result;//Watt         
     }
@@ -316,7 +329,7 @@ public class Surface implements PowerComputer, HeatLoss{
         s +="dimension x: "+this.dimX+System.getProperty("line.separator");
         s +="dimension y: "+this.dimY+System.getProperty("line.separator");
         s +="U value: "+this.uValue+System.getProperty("line.separator");
-        s +="Total square: "+this.square/1000000+"m^2"+System.getProperty("line.separator");
+        s +="Total square: "+this.square+"m^2"+System.getProperty("line.separator");
         //s +="Windows quantity: "+this.windows.size()+System.getProperty("line.separator");
         //s +="Windows area: "+this.windows.get(0).square;
         return s;

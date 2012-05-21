@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Denne klassen representerer en lamp eller en annen lyskilde
+ * 
+ * 
+ * 
+ * 
+ * 
+ ******************************************************************************/
+
 package entities;
 
 
@@ -5,7 +14,7 @@ import interfaces.HeatLoss;
 import interfaces.PowerComputer;
 
 /**
- * Klassen representerer en lamp
+ * 
  * 
  * @author 490501
  * @version 1.0.0
