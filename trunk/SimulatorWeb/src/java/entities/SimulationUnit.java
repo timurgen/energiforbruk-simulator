@@ -1,3 +1,17 @@
+/******************************************************************************
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ ******************************************************************************/
+
 package entities;
 
 
@@ -9,11 +23,12 @@ import java.util.ArrayList;
 /**
  * 
  * @author 490501
+ * @version 1.0.0
  */
 public class SimulationUnit implements PowerComputer, HeatLoss{
     private ArrayList<Surface> surfaces; //all outer surfaces such that: walls, floor, roof 
-    private double square; //total square mm
-    private double[] tempInside, tempOutside, tempDiff;
+    private double square; //total square m^2
+    private double[] tempInside, tempOutside, tempDiff; //grades Celsius
 
     public SimulationUnit() {
         surfaces = new ArrayList<Surface>();
@@ -113,7 +128,7 @@ public class SimulationUnit implements PowerComputer, HeatLoss{
     public void computeTempDifferenceFromInsideTempAndOutSideTemp() throws Exception {
         
         if(this.tempInside.length != this.tempOutside.length){
-            throw new Exception("rekker er ike like");
+            throw new Exception("rekker er ikke like");
         }
         this.tempDiff = new double[this.tempInside.length];
         for(int i = 0; i < this.tempInside.length; i++) {
