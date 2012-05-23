@@ -26,13 +26,48 @@ import java.util.ArrayList;
  * @version 1.0.0
  */
 public class SimulationUnit implements PowerComputer, HeatLoss{
-    private ArrayList<Surface> surfaces; //all outer surfaces such that: walls, floor, roof 
-    private double square; //total square m^2
-    private double[] tempInside, tempOutside, tempDiff; //grades Celsius
 
+    
+    /**
+     * all outer surfaces such that: walls, floor, roof
+     */
+    private ArrayList<Surface> surfaces;
+    
+    /**
+     * total square m^2
+     */
+    private double square; 
+    
+    /**
+     * 
+     */
+    private double[] tempInside, tempOutside, tempDiff; //grades Celsius
+    
+    /**
+     * represents the lattitude of building 
+     * 
+     */
+    private double lattitude;
+    
+    /**
+     * represents day of year 
+     * (1st year 0...364, from 365 add 0.25 for every completed year within the Great Year consisting of 4 years, i.e. 365.25 etc.
+     */
+    private double dayOfYear;
+    
+    
+    /**
+     * Default empty constructor
+     */
     public SimulationUnit() {
         surfaces = new ArrayList<Surface>();
     }
+    
+    /**
+     * Computes power consumptions of this unit
+     * @param hours
+     * @return 
+     */
     @Override
     public Double[] computeConsumption(int hours) {
         if(tempDiff.length < hours)

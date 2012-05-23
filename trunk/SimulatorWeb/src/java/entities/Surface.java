@@ -27,23 +27,45 @@ import java.util.ArrayList;
  * OBS! alle tall gitt i: lengde - mm; U verdi - W/m^2*K
  */
 public class Surface implements PowerComputer, HeatLoss{
+    /**
+     * width in mm
+     */
+    private double dimX; 
 
-    private double dimX; //width in mm
-
-    private double dimY; //high in mm
+    /**
+     * height in mm
+     */
+    private double dimY; 
     
-    private double square; // square of entity in m^2
+    /**
+     * square of entity in m^2
+     */
+    private double square;  
 
-    private double uValue;//Overall heat transfer coefficient W/m^2*K
+    /**
+     * Overall heat transfer coefficient W/m^2*K
+     */
+    private double uValue;
 
-    private char orientation;//south, norh, west, east
+    /**
+     * orientation of surface
+     * s - south, n - norh, w - west, e - east
+     */
+    private char orientation;
     
-    private double tempDifference; //difference between tempereture innside and outside grades Celsius
+    /**
+     * difference between tempereture innside and outside grades Celsius or Kelvin
+     */
+    private double tempDifference;
     
-    private double[] tempDifferences;//differences between tempereture innside and outside grades Celsius
+    /**
+     * differences between tempereture innside and outside grades Celsius
+     */
+    private double[] tempDifferences;
+    
     /**
      * uses if surface represents wall with windows, or roof with windows
-     * hver enkel vinde representeres akkurat på det samme måte som vegg
+     * hver enkel vindu representeres akkurat på det samme måte som vegg
      */
     private ArrayList<Surface> windows; 
     /**************************************************************************/
@@ -58,9 +80,9 @@ public class Surface implements PowerComputer, HeatLoss{
         this.dimY = 1000; //mm
         this.square = this.dimX*this.dimY; //mm^2
         this.uValue = 1.0; //W/m^2*K
-        this.tempDifferences = new double[0];//Celcius grads
-        
+        this.tempDifferences = new double[0];//Celcius grads    
     }
+    
     /**
      * constructor
      * @param dimX width of surface in mm
@@ -71,10 +93,9 @@ public class Surface implements PowerComputer, HeatLoss{
         this.dimY = dimY; //mm
         this.square = (this.dimX*this.dimY)/1000000; //m^2
         this.uValue = 1.0;//1 watt per m^2*K
-        this.tempDifferences = new double[0];
-        
-        
+        this.tempDifferences = new double[0]; 
     }
+    
     /**
      * constructor
      * @param dimX width of surface in mm
@@ -86,9 +107,9 @@ public class Surface implements PowerComputer, HeatLoss{
         this.dimY = dimY; //mm
         this.square = (this.dimX*this.dimY)/1000000; //m^2
         this.uValue = uValue;//1 watt per m^2*K
-        this.tempDifferences = new double[0];
-        
+        this.tempDifferences = new double[0];  
     }
+    
     /**
      * constructor
      * @param dimX width of surface in mm
@@ -104,8 +125,7 @@ public class Surface implements PowerComputer, HeatLoss{
         this.square = (this.dimX*this.dimY)/1000000; // in m^2
         this.uValue = uValue;//1 watt per m^2*K     
         this.windows.add(window);//vindu
-        this.tempDifferences = new double[0];
-        
+        this.tempDifferences = new double[0];   
     }  
     
 /******************************************************************************/
@@ -113,8 +133,8 @@ public class Surface implements PowerComputer, HeatLoss{
 
 /******************************************************************************/
     //functions 
+    
     /**
-     * 
      * @param dimXint width of surface in mm
      * @param dimYint high of surface in mm
      * @param uValue  verall heat transfer coefficient
@@ -172,8 +192,7 @@ public class Surface implements PowerComputer, HeatLoss{
             for(int i = 0; i < this.windows.size(); i++) {
                 winHeatLoss += this.windows.get(i).computeHeatLoss(this.tempDifference);//summerer varmetap fra alle vinduer
             }
-            result = ((this.square - this.countSquareOfWindows())) * this.uValue * this.tempDifference + winHeatLoss;
-            
+            result = ((this.square - this.countSquareOfWindows())) * this.uValue * this.tempDifference + winHeatLoss;  
         }
         else {
             result = (this.square) * this.uValue * this.tempDifference;
@@ -181,6 +200,10 @@ public class Surface implements PowerComputer, HeatLoss{
         return result;//Watt         
     }
     
+    /**
+     * 
+     * @return 
+     */
     @Override
     public double computeHeatLoss() {//antar at tempDifference var satt opp tidligere
         return this.computeHeatLoss(this.tempDifference);//Watt
@@ -255,66 +278,130 @@ public class Surface implements PowerComputer, HeatLoss{
     /*************************************************************************/
     /* get og set metoder her */
     
+    /**
+     * 
+     * @return 
+     */
     public double getDimX() {
         return dimX;
     }
 
+    /**
+     * 
+     * @param dimX 
+     */
     public void setDimX(double dimX) {
         this.dimX = dimX;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public double getDimY() {
         return dimY;
     }
 
+    /**
+     * 
+     * @param dimY 
+     */
     public void setDimY(double dimY) {
         this.dimY = dimY;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public char getOrientation() {
         return orientation;
     }
 
+    /**
+     * 
+     * @param orientation 
+     */
     public void setOrientation(char orientation) {
         this.orientation = orientation;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public double getSquare() {
         return square;
     }
 
+    /**
+     * 
+     * @param square 
+     */
     public void setSquare(double square) {
         this.square = square;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public double getuValue() {
         return uValue;
     }
 
+    /**
+     * 
+     * @param uValue 
+     */
     public void setuValue(double uValue) {
         this.uValue = uValue;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public ArrayList<Surface> getWindows() {
         return windows;
     }
 
+    /**
+     * 
+     * @param windows 
+     */
     public void setWindows(ArrayList<Surface> windows) {
         this.windows = windows;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public double getTempDifference() {
         return tempDifference;
     }
 
+    /**
+     * 
+     * @param tempDifference 
+     */
     public void setTempDifference(double tempDifference) {
         this.tempDifference = tempDifference;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public double[] getTempDifferences() {
         return tempDifferences;
     }
 
+    /**
+     * 
+     * @param tempDifferences 
+     */
     public void setTempDifferences(double[] tempDifferences) {
         this.tempDifferences = tempDifferences;
     }
