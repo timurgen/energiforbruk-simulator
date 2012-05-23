@@ -36,16 +36,7 @@ public class Tester {
 //        for(Double c : b){
 //        System.out.println(c);
 //    }
-        
-        Ventilation v = new Ventilation(1.29, 6*5*3, 3000, 0.1);
-        v.setTempInside(20);
-        v.setTempDiff(5);
-        try {
-            System.out.println(v.getAirFlowRate()); //m^3/s
-            System.out.println(v.getVentilationRate());
-        } catch (Exception ex) {
-            Logger.getLogger(Tester.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
         
     }
 }

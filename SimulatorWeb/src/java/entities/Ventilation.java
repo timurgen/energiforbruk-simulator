@@ -1,5 +1,5 @@
 /******************************************************************************
- * ventilasjonstap = (tetthet(kg/m^3) * vollum(m^3))/(29 g/moll)*((T1-T2)*7/2*R(gasskonstant))/t(tid i sekunder)
+ * ventilasjonstap = (tetthet(kg/m^3) * vollum(m^3))/(0.029 kg/moll)*((T1-T2)*7/2*R(gasskonstant J·K^-1·mol^-1))/t(tid)
  * flow rate for natural ventilation here http://en.wikipedia.org/wiki/Natural_ventilation#Estimating_buoyancy-driven_ventilation   
  * Videre må finne ut tall som brukes i virkelighet (tetthet og sirkulasjonshastighet )
  * Klassen skal utviddes slik at rekuperasjon skal være med
@@ -96,12 +96,13 @@ public class Ventilation implements HeatLoss, PowerComputer{
     private double airFlowRate; 
     
     /**
-     * air changes per hour
+     * represents air changes per hour
+     * 1 - by default
      */
     private double ventilationRate; 
     
     /**
-     * Heat recovery coeffisient (Virkningsgrad på gjenvinner) equal 1 by default
+     * Heat recovery coeffisient (Virkningsgrad på gjenvinner) i prosent
      */
     private double  heatRecovery;
     
@@ -111,7 +112,9 @@ public class Ventilation implements HeatLoss, PowerComputer{
     private double powerEffect;
     
     /**
-     * 
+     * type of ventilation 
+     * 0 - natural
+     * 1 - forced
      */
     private int ventType;
     /**************************************************************************/
@@ -122,31 +125,33 @@ public class Ventilation implements HeatLoss, PowerComputer{
      * Default empty constructor
      */
     public Ventilation() {
-        
+        this.ventilationRate = 1;
     }
     
     /**
-     * Constructor for natural ventilation
+     * Constructor for natural ventilation with ventilation pipe length
      * @param densityOfAir kg/m^3
      * @param volume inside entity m^3
      * @param heightOfPipe height of ventilation pipe from inlet to outlet mm
      * @param areaOfOpening m^2
      */
-    public Ventilation(double densityOfAir, double volume, double heightOfPipe, double areaOfOpening) {
-        this.densityOfAir = densityOfAir;
-        this.volume = volume;
+    public Ventilation(double heightOfPipe, double areaOfOpening) {
         this.heightOfPipe = heightOfPipe;
         this.areaOfOpening = areaOfOpening;
         this.ventType = 0;
+        this.ventilationRate = 1;
     }
     
     /**
      * Constructor for mechanical ventilation
      * with warm recuperation
-     * @param heatRecovery 
+     * @param heatRecovery varmgjenvinning (heat recuperation) i prosent
+     * @param ach represents air changes per hour
      */
-    public Ventilation(double heatRecovery) {
-        this.ventType = 1;
+    public Ventilation(double heatRecovery, double ach, int ventType) {
+        this.ventType = ventType;
+        this.heatRecovery = heatRecovery;
+        this.ventilationRate = ach;
     }
     
     
@@ -165,12 +170,17 @@ public class Ventilation implements HeatLoss, PowerComputer{
     /**
      * 
      * @param tempDifference
-     * @return 
+     * @return Heatloss trough ventilation  gitt i kilowatt per time
      */
     @Override
     public double computeHeatLoss(double tempDifference) {
         //ventilationLoss = (tetthet*this.volume)/mm*((this.sliderTemperatureInside.getValue() - this.averageTemp)*7/2*R)/t;
-        return (this.densityOfAir*this.volume)/MOLARMASS*(tempDifference*7/2*R)/this.ventilationRate;   
+        if(this.ventType == 0)
+            return (((this.densityOfAir*this.volume)/MOLARMASS)*(tempDifference*7/2)*(R/3600)* this.ventilationRate * (1- this.heatRecovery/100))/1000;
+        else if(this.ventType == 1)
+            return (((this.airFlowRate*3600) * tempDifference) / 3.0 * (1+this.heatRecovery/100))/1000;
+        else 
+            throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -183,10 +193,11 @@ public class Ventilation implements HeatLoss, PowerComputer{
      * @return computed airflow rate in m^3/s for natural ventilation
      * @throws Exception if inside temp equal or less than zero
      */
-    public double getAirFlowRate() throws Exception {
+    public double getAirFlowRateNatural() throws Exception {
         if(this.tempInside <= 0)
             throw new Exception("Inside temperature must be greater than zero");
         this.airFlowRate = CD * this.areaOfOpening * Math.sqrt(g*(this.heightOfPipe/1000)*(this.tempDiff/this.tempInside)); //m^3/s
+        
         return this.airFlowRate;
     }
     
@@ -196,7 +207,7 @@ public class Ventilation implements HeatLoss, PowerComputer{
      * @return computed airflow rate in m^3/s for natural ventilation
      * @throws Exception if inside temp equal or less than zero
      */
-    public double getAirFlowRate(double cd) throws Exception {
+    public double getAirFlowRateNatural(double cd) throws Exception {
         if(this.tempInside <= 0)
             throw new Exception("Inside temperature must be greater than zero");
         this.airFlowRate = cd * this.areaOfOpening * Math.sqrt(g*(this.heightOfPipe/1000)*(this.tempDiff/this.tempInside)); //m^3/s
@@ -206,10 +217,10 @@ public class Ventilation implements HeatLoss, PowerComputer{
     /**
      * 
      * @return air changes per hour
-     * @throws Exception if parameter tempInside in getAirFlowRate equal or less than zero;
+     * @throws Exception if parameter tempInside in getAirFlowRateNatural equal or less than zero;
      */
     public double getVentilationRate() throws Exception {
-        return (3600*getAirFlowRate())/this.volume;
+        return (3600*getAirFlowRateNatural())/this.volume;
     }
 
     /***************************************************************************
@@ -241,8 +252,21 @@ public class Ventilation implements HeatLoss, PowerComputer{
     }
     
     /**
-     * 
-     * @param densityOfAir 
+     * Sets the density of air (kg/m^3)
+     * +35 	 	1.1455 	
+     * +30 	 	1.1644 	
+     * +25 	 	1.1839 
+     * +20 	 	1.2041 
+     * +15 		1.2250 	
+     * +10 	 	1.2466 	
+     * +5 	 	1.2690 	
+     * ±0 	 	1.2922 
+     * -5 	 	1.3163 	
+     * -10 	 	1.3413 
+     * -15 	 	1.3673 	
+     * -20 	 	1.3943 	
+     * -25 	 	1.4224 
+     * @param densityOfAir gitt i kg per kubikkmeter
      */
     public void setDensityOfAir(double densityOfAir) {
         this.densityOfAir = densityOfAir;
@@ -321,12 +345,83 @@ public class Ventilation implements HeatLoss, PowerComputer{
     }
     
     /**
-     * 
-     * @param volume 
+     * Set the volume of the unit
+     * @param volume of unit in m^3
      */
     public void setVolume(double volume) {
         this.volume = volume;
     }
+    
+    /**
+     * 
+     * @return airflow rate in kubikkmeter per sekund 
+     */
+    public double getAirFlowRate() {
+        return airFlowRate;
+    }
+    
+    /**
+     * sets the airflow rate in kubikkmeter per sekund
+     * @param airFlowRate 
+     */
+    public void setAirFlowRate(double airFlowRate) {
+        this.airFlowRate = airFlowRate;
+    }
+    
+    /**
+     * returns heat recovery value
+     * @return 
+     */
+    public double getHeatRecovery() {
+        return heatRecovery;
+    }
+    
+    /**
+     * sets heat recovery value
+     * @param heatRecovery  heat recuperation value in prosents
+     */
+    public void setHeatRecovery(double heatRecovery) {
+        this.heatRecovery = heatRecovery;
+    }
+
+    /**
+     * 
+     * @return power consumption of forced ventilation
+     */
+    public double getPowerEffect() {
+        return powerEffect;
+    }
+    
+    /**
+     * sets the power consumption of forced ventialtion
+     * @param powerEffect 
+     */
+    public void setPowerEffect(double powerEffect) {
+        this.powerEffect = powerEffect;
+    }
+    
+    /**
+     * 
+     * @return type of ventilation 
+     */
+    public int getVentType() {
+        return ventType;
+    }
+
+    /**
+     * Sets type of ventilation
+     * 0 - natural 
+     * 1 - forced
+     * @param ventType 
+     */
+    public void setVentType(int ventType) {
+        this.ventType = ventType;
+    }
+
+    
+    
+    
+    
  /*********END OF GETTERS & SETTERS ********************************************/ 
     
     /**
@@ -341,6 +436,20 @@ public class Ventilation implements HeatLoss, PowerComputer{
     }
 
 
+    
+/*****************************************************************************/
+//Test
+//
+//    public static void main(String[] args) {
+//        Ventilation v = new Ventilation();
+//        v.setVolume(400);
+//        v.setDensityOfAir(1.2041);
+//        v.setTempDiff(40);
+//        System.out.println(v.computeHeatLoss());
+//        v.setVentType(1);
+//        v.setAirFlowRate(400.0/3600.0);
+//        System.out.println(v.computeHeatLoss());
+//    }
 }
 
 
