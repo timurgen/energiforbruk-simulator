@@ -55,6 +55,11 @@ public class SimulationUnit implements PowerComputer, HeatLoss{
      */
     private double dayOfYear;
     
+    /**
+     * Ventilation unit
+     */
+    private Ventilation vent;
+    
     
     /**
      * Default empty constructor
@@ -172,6 +177,21 @@ public class SimulationUnit implements PowerComputer, HeatLoss{
         else
             this.tempDiff[i] = tempInside[i]  - tempOutside[i];
         }
+    }
+    
+    /**
+     * Sets empty ventilation unit 
+     */
+    public void addVentilation() {
+        this.vent = new Ventilation();
+    }
+    
+    /**
+     * Sets ventilation unit
+     * @param v Ventilation unit that was created before
+     */
+    public void addVentilation(Ventilation v) {
+        this.vent = v;
     }
 
     

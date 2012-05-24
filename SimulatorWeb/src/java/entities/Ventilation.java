@@ -439,17 +439,17 @@ public class Ventilation implements HeatLoss, PowerComputer{
     
 /*****************************************************************************/
 //Test
-//
-//    public static void main(String[] args) {
-//        Ventilation v = new Ventilation();
-//        v.setVolume(400);
-//        v.setDensityOfAir(1.2041);
-//        v.setTempDiff(40);
-//        System.out.println(v.computeHeatLoss());
-//        v.setVentType(1);
-//        v.setAirFlowRate(400.0/3600.0);
-//        System.out.println(v.computeHeatLoss());
-//    }
+
+    public static void main(String[] args) {
+        Ventilation v = new Ventilation();
+        v.setVolume(400);
+        v.setDensityOfAir(1.2041);
+        v.setTempDiff(40);
+        System.out.println(v.computeHeatLoss());
+        v.setVentType(1);
+        v.setAirFlowRate(400.0/3600.0);
+        System.out.println(v.computeHeatLoss());
+    }
 }
 
 
