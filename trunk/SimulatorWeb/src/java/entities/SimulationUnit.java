@@ -120,10 +120,15 @@ public class SimulationUnit implements PowerComputer, HeatLoss{
         return result;//wt*m^2
     }
 
+    /**
+     * 
+     * @return total heat loss trough outer surfaces
+     */
     @Override
     public double computeHeatLoss() {
         if(this.square == 0)
-            this.computeSquareIfFloorDoesntExist();        
+            this.computeSquareIfFloorDoesntExist();
+        
         double result = 0;
         for(int i = 0; i < surfaces.size(); i++) {
             result += surfaces.get(i).computeHeatLoss();
@@ -131,20 +136,24 @@ public class SimulationUnit implements PowerComputer, HeatLoss{
         return result; //wt*m^2
     }
     /**
-     * 
+     * sets new surface that represents outer wall or roof
      * @param s 
      */
     public void addWall(Surface s) {
         this.surfaces.add(s);
     }
     
+    /**
+     * sets new surface that represents a floor(ground) of unit
+     * @param s 
+     */
     public void addFloor(Surface s) {
         this.surfaces.add(s);
-        this.square = s.getSquare(); 
+        this.square += s.getSquare(); 
     }
     
     /**
-     * 
+     * Remove outer surface from unit
      * @param i 
      */
     public void removeSurface(int i) {
@@ -182,7 +191,7 @@ public class SimulationUnit implements PowerComputer, HeatLoss{
     /**
      * Sets empty ventilation unit 
      */
-    public void addVentilation() {
+    public void newVentilation() {
         this.vent = new Ventilation();
     }
     
@@ -192,6 +201,17 @@ public class SimulationUnit implements PowerComputer, HeatLoss{
      */
     public void addVentilation(Ventilation v) {
         this.vent = v;
+    }
+    
+    /**
+     * saves profile of simulation unit as a readable txt file
+     */
+    public void saveAsTxt() {
+        
+    }
+    
+    public void loadFromTxt(String path) {
+        
     }
 
     
@@ -206,7 +226,8 @@ public class SimulationUnit implements PowerComputer, HeatLoss{
         return square;
     }
     /**
-     * Shouldn't uses without specially reason, coz square computes in addFloor() function normally
+     * Uses with simple simulation to set total square of unit
+     * 
      * @param square total square of unit in mm^2
      */
     public void setSquare(double square) {
