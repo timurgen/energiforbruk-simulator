@@ -10,6 +10,7 @@
  ******************************************************************************/
 package entities;
 
+import exceptions.LessThanZeroException;
 import interfaces.HeatLoss;
 import interfaces.PowerComputer;
 /**
@@ -157,8 +158,8 @@ public class Ventilation implements HeatLoss, PowerComputer{
     
     /**
      * 
-     * @param tempInside
-     * @param tempOutside
+     * @param tempInside temperature inside of unit
+     * @param tempOutside temperature outside of unit
      * @return 
      */
     @Override
@@ -169,20 +170,23 @@ public class Ventilation implements HeatLoss, PowerComputer{
     
     /**
      * 
-     * @param tempDifference
+     * @param tempDifference difference between inside temperature and outside temperature
      * @return Heatloss trough ventilation  gitt i kilowatt per time
      */
     @Override
     public double computeHeatLoss(double tempDifference) {
-        //ventilationLoss = (tetthet*this.volume)/mm*((this.sliderTemperatureInside.getValue() - this.averageTemp)*7/2*R)/t;
-        if(this.ventType == 0)
+        //if(this.ventType == 0)
             return (((this.densityOfAir*this.volume)/MOLARMASS)*(tempDifference*7/2)*(R/3600)* this.ventilationRate * (1- this.heatRecovery/100))/1000;
-        else if(this.ventType == 1)
-            return (((this.airFlowRate*3600) * tempDifference) / 3.0 * (1+this.heatRecovery/100))/1000;
-        else 
-            throw new UnsupportedOperationException("Not supported yet.");
+        //else if(this.ventType == 1)
+            //return (((this.airFlowRate*3600) * tempDifference) / 3.0 * (1+this.heatRecovery/100))/1000;
+        //else 
+           // throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * 
+     * @return 
+     */
     @Override
     public double computeHeatLoss() {
         return computeHeatLoss(this.tempDiff);
@@ -209,7 +213,7 @@ public class Ventilation implements HeatLoss, PowerComputer{
      */
     public double getAirFlowRateNatural(double cd) throws Exception {
         if(this.tempInside <= 0)
-            throw new Exception("Inside temperature must be greater than zero");
+            throw new LessThanZeroException("Inside temperature must be greater than zero");
         this.airFlowRate = cd * this.areaOfOpening * Math.sqrt(g*(this.heightOfPipe/1000)*(this.tempDiff/this.tempInside)); //m^3/s
         return this.airFlowRate;
     }
@@ -270,6 +274,17 @@ public class Ventilation implements HeatLoss, PowerComputer{
      */
     public void setDensityOfAir(double densityOfAir) {
         this.densityOfAir = densityOfAir;
+    }
+    
+    /**
+     * return density of air 
+     * @param temp temperature of air in Celsius
+     * @param humidity of air im prosent
+     * @param pressure  in hPa
+     * @return dencity of air
+     */
+    public double computeDensityofAir(double temp, double humidity, double pressure){
+        return 0;
     }
     
     /**
@@ -438,7 +453,7 @@ public class Ventilation implements HeatLoss, PowerComputer{
 
     
 /*****************************************************************************/
-//Test
+//Test area
 
     public static void main(String[] args) {
         Ventilation v = new Ventilation();
