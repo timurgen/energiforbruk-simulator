@@ -46,6 +46,11 @@ public class Surface implements PowerComputer, HeatLoss{
      * Overall heat transfer coefficient W/m^2*K
      */
     private double uValue;
+    
+    /**
+     * Kuldebroverdi
+     */
+    private double thermalBridgeValue;
 
     /**
      * orientation of surface

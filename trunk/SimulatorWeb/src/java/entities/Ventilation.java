@@ -175,12 +175,12 @@ public class Ventilation implements HeatLoss, PowerComputer{
      */
     @Override
     public double computeHeatLoss(double tempDifference) {
-        //if(this.ventType == 0)
+        if(this.ventType == 0)
             return (((this.densityOfAir*this.volume)/MOLARMASS)*(tempDifference*7/2)*(R/3600)* this.ventilationRate * (1- this.heatRecovery/100))/1000;
-        //else if(this.ventType == 1)
-            //return (((this.airFlowRate*3600) * tempDifference) / 3.0 * (1+this.heatRecovery/100))/1000;
-        //else 
-           // throw new UnsupportedOperationException("Not supported yet.");
+        else if(this.ventType == 1)
+            return (((this.airFlowRate*3600) * tempDifference) / 3.0 * (1+this.heatRecovery/100))/1000;
+        else 
+            throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**
