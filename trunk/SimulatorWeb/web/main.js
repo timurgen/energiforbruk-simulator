@@ -43,3 +43,52 @@ function addWindow(id) {
     surface.appendChild(newElement);
     windowCounter++;
 }
+
+function checkRegInfo() {
+    var name = document.getElementById('id_name').value;//funker
+    var email1 = document.getElementById('id_mail1').value;//funker
+    var email2 = document.getElementById('id_mail2').value;//funker
+    var pass1 = document.getElementById('id_pass1').value;//funker
+    var pass2 = document.getElementById('id_pass2').value;//funker
+    //sjekker om epost feiler
+    if(email1 != email2) {
+        document.getElementById('register_form_wrong_message').innerHTML = "Check emails!";//funker
+        document.getElementById('id_lbl_mail').style.color = 'red';
+        document.getElementById('id_lbl_mail2').style.color = 'red';
+        return false;
+    }
+    //sjekker om password feiler
+    if(pass1 != pass2) {
+        document.getElementById('register_form_wrong_message').innerHTML = "Check passwords!";//funker
+        document.getElementById('id_lbl_pass').style.color = 'red';
+        document.getElementById('id_lbl_pass2').style.color = 'red';
+        return false;
+    }
+    //sjekker om brukernavn eller epost er registrert allerede
+    var output = ajaxCheck(name,email1);
+    document.getElementById('register_form_wrong_message').innerHTML = output;//funker
+
+    return false;
+}
+
+
+/**
+ * Ajax function sjekker om brukernavn eller epost er registrert allerede
+ */
+function ajaxCheck(name, email) {
+    var query = "?mode=check&name="+name+"&email="+email;
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+    {// moderne nettlesere
+        xmlhttp=new XMLHttpRequest();      
+    }
+    else
+    {// gammelt ie
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    //sender forespУИrsel
+    alert(query);
+    xmlhttp.open("GET","user"+query,false);
+    xmlhttp.send(null);
+    return xmlhttp.responseText;
+}

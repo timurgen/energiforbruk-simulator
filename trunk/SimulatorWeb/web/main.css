@@ -1,0 +1,129 @@
+/* 
+    Document   : main
+    Created on : 31.mai.2012, 18:46:04
+    Author     : 490501
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+body {
+    background-color:#fffddf;   
+}
+
+/*menu defineres her*/
+div.menu_main {
+    width: 80%;
+    height: 100pt;
+    position: relative;
+    left: 250pt;    
+}
+
+div.menu_element {
+    
+    position: relative;
+    top: 100pt;  
+}
+
+
+
+/*menu knapper defineres her*/
+a.button {
+    background: transparent url('bg_button_a.gif') no-repeat scroll top right;
+    color: #444;
+    display: block;
+    float: left;
+    font: normal 12px arial, sans-serif;
+    height: 24px;
+    margin-right: 6px;
+    padding-right: 18px; /* sliding doors padding */
+    text-decoration: none;
+}
+a.button span {
+    background: transparent url('bg_button_span.gif') no-repeat;
+    display: block;
+    line-height: 14px;
+    padding: 5px 0 5px 18px;
+}
+a.button:active {
+    background-position: bottom right;
+    color: #000;
+    outline: none; /* hide dotted outline in Firefox */
+}
+
+a.button:active span {
+    background-position: bottom left;
+    padding: 6px 0 4px 18px; /* push text down 1px */
+}
+
+
+div.login_area, div.register_area {
+    width: 50%;
+    height: 300pt;
+    /*background-color: #cadaba;*/
+    /*opacity: 0.4;*/
+    background: rgba(123, 160, 91, 0.2);
+    position: relative;
+    left: 250pt;
+    top: 40pt;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    -webkit-border-radius: 15px; 
+    -moz-border-radius: 15px; 
+    border-radius: 15px;
+    margin: 15pt;
+}
+
+div.login_box {
+    opacity: 0.7;
+    border: 2pt solid black;
+    padding: 4pt;
+    background-color: #ffefd5;
+    position: relative;
+    left: 30%;
+    top: 30%;
+    width: 250pt;
+    height: 90pt;
+    color: green;
+}
+
+A:link{ text-decoration: none; }
+A:visited{ text-decoration: none; }
+A:hover{ text-decoration: none;}
+input.login, input.register, input.addGame { 
+    -webkit-border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    border-radius: 5px;
+    margin: 5pt;
+}
+
+div.footer {
+    position: absolute;
+    top: 90%;
+    left: 30%;
+    text-align: center;
+}
+
+div.register_box {
+    opacity: 0.7;
+    border: 2pt solid black;
+    padding: 4pt;
+    background-color: #ffefd5;
+    position: relative;
+    left: 30%;
+    top: 10%;
+    width: 250pt;
+    height: auto;
+    color: green;
+    -webkit-border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    border-radius: 5px;
+}
+div.wrong_message {
+    text-align: center;
+    color: red;
+    text-shadow: #6374AB 20px -12px 2px;
+}
