@@ -1,0 +1,12 @@
+<%-- 
+    Document   : footer
+    Created on : 31.mai.2012, 18:51:10
+    Author     : 490501
+--%>
+
+<div class="footer">
+    Designed and developed by Megaprogrammere AS 2012&#169   
+    <a href="http://glassfish.java.net">powered by<img src="glassfish_logo.jpg" /></a>
+</div>
+</body>
+</html>
