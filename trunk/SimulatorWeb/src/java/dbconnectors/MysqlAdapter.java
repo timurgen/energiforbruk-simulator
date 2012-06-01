@@ -24,6 +24,7 @@ public class MysqlAdapter {
     private Statement stmt;
     public MysqlAdapter() {
         try {
+            
             Class.forName("com.mysql.jdbc.Driver");
             url = "jdbc:mysql://kark.hin.no:3306/aspen_v12";
             name = "aspen_v12";

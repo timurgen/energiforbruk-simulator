@@ -16,16 +16,16 @@ body {
 
 /*menu defineres her*/
 div.menu_main {
-    width: 80%;
+    width: auto;
     height: 100pt;
     position: relative;
-    left: 250pt;    
+    left: 0pt;    
 }
 
 div.menu_element {
     
     position: relative;
-    top: 100pt;  
+    top: 10%;  
 }
 
 
@@ -62,15 +62,15 @@ a.button:active span {
 
 div.login_area, div.register_area {
     width: 50%;
-    height: 300pt;
+    height: auto;
     /*background-color: #cadaba;*/
     /*opacity: 0.4;*/
     background: rgba(123, 160, 91, 0.2);
     position: relative;
     left: 250pt;
-    top: 40pt;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    top: 5%;
+    padding: 5pt 5pt 5pt 5pt;
+    /*padding-bottom: 5px;*/
     -webkit-border-radius: 15px; 
     -moz-border-radius: 15px; 
     border-radius: 15px;
@@ -101,9 +101,9 @@ input.login, input.register, input.addGame {
 }
 
 div.footer {
-    position: absolute;
-    top: 90%;
-    left: 30%;
+    position: relative;
+    top: 100%;
+    left: 0%;
     text-align: center;
 }
 
@@ -113,9 +113,9 @@ div.register_box {
     padding: 4pt;
     background-color: #ffefd5;
     position: relative;
-    left: 30%;
+    left: 10%;
     top: 10%;
-    width: 250pt;
+    width: 350pt;
     height: auto;
     color: green;
     -webkit-border-radius: 5px; 

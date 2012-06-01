@@ -50,6 +50,12 @@ function checkRegInfo() {
     var email2 = document.getElementById('id_mail2').value;//funker
     var pass1 = document.getElementById('id_pass1').value;//funker
     var pass2 = document.getElementById('id_pass2').value;//funker
+    //sjekker om brukernavn har lengde fra 3 til 18
+    if(name.length < 3 | name.length > 18) { 
+        document.getElementById('id_lbl_name').style.color = 'red';
+        document.getElementById('register_form_wrong_message').innerHTML = "name must have length more than 3 and less than 18!";//funker
+        return false;
+    }
     //sjekker om epost feiler
     if(email1 != email2) {
         document.getElementById('register_form_wrong_message').innerHTML = "Check emails!";//funker
