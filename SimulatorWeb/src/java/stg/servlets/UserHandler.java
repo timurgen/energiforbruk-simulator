@@ -1,7 +1,11 @@
 package stg.servlets;
 
+import dbconnectors.MysqlAdapter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -42,7 +46,11 @@ public class UserHandler extends HttpServlet {
                 }
                 String name = (String)request.getParameter("name");
                 String email= (String)request.getParameter("email");
-                out.print(checkIfUserExists(name, email));
+                try {
+                    out.print(checkIfUserExists(name, email));
+                } catch (SQLException ex) {
+                    Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
             }
             
@@ -93,8 +101,10 @@ public class UserHandler extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-public String checkIfUserExists(String name, String email) {
-    return "hui";
+public boolean checkIfUserExists(String name, String email) throws SQLException {
+    MysqlAdapter md = new MysqlAdapter();
+    return md.getUserByName(name);
+
 }
 
 }
