@@ -49,9 +49,12 @@ public class UserHandler extends HttpServlet {
                 try {
                     out.print(checkIfUserExists(name, email));
                 } catch (SQLException ex) {
-                    Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, "Check branch", ex);
                 }
                 
+            }
+            else if(request.getParameter("mode").equals("check")) {
+                //TODO login check, session creating osv
             }
             
 
