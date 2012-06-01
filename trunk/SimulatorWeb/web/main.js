@@ -64,6 +64,14 @@ function checkRegInfo() {
         document.getElementById('id_lbl_pass2').style.color = 'red';
         return false;
     }
+    //sjekker om email er valid
+    var regex = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
+    if(email1.match(regex) == null) {
+        document.getElementById('register_form_wrong_message').innerHTML = "Email invalid";
+        return false;
+    } 
+    
+    
     //sjekker om brukernavn eller epost er registrert allerede
     var output = ajaxCheck(name,email1);
     document.getElementById('register_form_wrong_message').innerHTML = output;//funker
@@ -86,8 +94,7 @@ function ajaxCheck(name, email) {
     {// gammelt ie
         xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
     }
-    //sender forespУИrsel
-    alert(query);
+    //sender request
     xmlhttp.open("GET","user"+query,false);
     xmlhttp.send(null);
     return xmlhttp.responseText;
