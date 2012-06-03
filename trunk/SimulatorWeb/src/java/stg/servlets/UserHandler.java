@@ -1,6 +1,7 @@
 package stg.servlets;
 
 import dbconnectors.MysqlAdapter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "UserHandler", urlPatterns = {"/user"})
 public class UserHandler extends HttpServlet {
+    
 
     /**
      * Processes requests for both HTTP
@@ -30,6 +32,7 @@ public class UserHandler extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+        
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
@@ -38,7 +41,7 @@ public class UserHandler extends HttpServlet {
                 out.println("fail request, mode == null");
                 return;
             }
-            //main
+            //registration check
             if(request.getParameter("mode").equals("check")) {
                 if(request.getParameter("name") == null | request.getParameter("email") == null){
                     out.println("name or email are equal to null");
@@ -50,11 +53,18 @@ public class UserHandler extends HttpServlet {
                     out.print(checkIfUserExists(name, email));
                 } catch (SQLException ex) {
                     Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, "Check branch", ex);
-                }
+                } catch(IOException ex){
+                    Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, "Check branch", ex);
+                } 
                 
             }
-            else if(request.getParameter("mode").equals("check")) {
+            //login
+            else if(request.getParameter("mode").equals("login")) {
                 //TODO login check, session creating osv
+            }
+            //registration
+            else if(request.getParameter("mode").equals("registration")) {
+                //TODO save new user in database
             }
             
 
@@ -104,7 +114,7 @@ public class UserHandler extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-public boolean checkIfUserExists(String name, String email) throws SQLException {
+public boolean checkIfUserExists(String name, String email) throws SQLException, FileNotFoundException, IOException {
     MysqlAdapter md = new MysqlAdapter();
     return md.getUserByName(name);
 
