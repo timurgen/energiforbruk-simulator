@@ -1,18 +1,17 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package dbconnectors;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
-import com.mysql.jdbc.exceptions.MySQLDataException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import stg.config.Config;
 
 /**
  *
@@ -25,9 +24,15 @@ public class MysqlAdapter {
     private String pass;
     private Statement stmt;
     private PreparedStatement pstmt;
-    public MysqlAdapter() {
+    
+    /**
+     * Main constructor
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
+    public MysqlAdapter() throws FileNotFoundException, IOException {
         try {
-            
+            Config conf = new Config();
             Class.forName("com.mysql.jdbc.Driver");
             url = "jdbc:mysql://kark.hin.no:3306/aspen_v12";
             name = "aspen_v12";
@@ -54,7 +59,7 @@ public class MysqlAdapter {
     }
     
     //test
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, FileNotFoundException, IOException {
         MysqlAdapter ms = new MysqlAdapter();
         ms.getUserByName("Timur");
     }

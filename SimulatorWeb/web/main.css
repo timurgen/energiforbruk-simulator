@@ -67,7 +67,7 @@ div.login_area, div.register_area {
     /*opacity: 0.4;*/
     background: rgba(123, 160, 91, 0.2);
     position: relative;
-    left: 250pt;
+    /*left: 250pt;*/
     top: 5%;
     padding: 5pt 5pt 5pt 5pt;
     /*padding-bottom: 5px;*/
@@ -83,7 +83,7 @@ div.login_box {
     padding: 4pt;
     background-color: #ffefd5;
     position: relative;
-    left: 30%;
+    left: 5%;
     top: 30%;
     width: 250pt;
     height: 90pt;
@@ -93,7 +93,7 @@ div.login_box {
 A:link{ text-decoration: none; }
 A:visited{ text-decoration: none; }
 A:hover{ text-decoration: none;}
-input.login, input.register, input.addGame { 
+input.login, input.register{ 
     -webkit-border-radius: 5px; 
     -moz-border-radius: 5px; 
     border-radius: 5px;
@@ -113,7 +113,7 @@ div.register_box {
     padding: 4pt;
     background-color: #ffefd5;
     position: relative;
-    left: 10%;
+    left: 5%;
     top: 10%;
     width: 350pt;
     height: auto;
