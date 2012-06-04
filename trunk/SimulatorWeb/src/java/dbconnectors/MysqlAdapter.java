@@ -3,6 +3,7 @@ package dbconnectors;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+import ejb.UValues;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -10,13 +11,12 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import stg.config.Config;
 
 /**
- *
+ * Class håndterer alle operasjoner som er knyttet til databaser , alle forespørsler ligger her 
  * @author 490501
  */
 public class MysqlAdapter {
@@ -24,7 +24,6 @@ public class MysqlAdapter {
     private Connection con;
     private String name;
     private String pass;
-    private Statement stmt;
     private PreparedStatement pstmt;
     Config conf;
     
@@ -34,6 +33,7 @@ public class MysqlAdapter {
      */
     public MysqlAdapter() throws IOException {
         try {
+            
             conf = new Config();
             Class.forName("com.mysql.jdbc.Driver");
             url = conf.getParameter("db.host")+conf.getParameter("db.name");
@@ -147,8 +147,15 @@ public class MysqlAdapter {
         else return -1;        
     }
     
+    /**
+     * returns all standarts with u-values from database
+     */
+    public void getStandarts() throws SQLException {
+        UValues row = new UValues();
+        
+    }
     
-    //test
+    //*******************************************test**************************************//
     public static void main(String[] args) throws SQLException, IOException, Exception {
         MysqlAdapter ms = null;
         try {
@@ -161,8 +168,5 @@ public class MysqlAdapter {
         int a = ms.autentificateUser("tim", "padss");
        
         System.out.println(a);
-    }
-    
-    
-    
+    } 
 }
