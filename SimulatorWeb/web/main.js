@@ -88,10 +88,7 @@ function checkRegInfo() {
         document.getElementById('register_form_wrong_message').innerHTML = "username or email exists";//funker
         return false;
     }
-    return true;
-    
-
-    
+    return true;   
 }
 
 
