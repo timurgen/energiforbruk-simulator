@@ -52,9 +52,9 @@ public class UserHandler extends HttpServlet {
                 try {
                     out.print(checkIfUserExists(name, email));
                 } catch (SQLException ex) {
-                    Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, "Check branch", ex);
+                    Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, "Exception in check function", ex);
                 } catch(IOException ex){
-                    Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, "Check branch", ex);
+                    Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, "Exception in check function", ex);
                 } 
                 
             }
@@ -64,7 +64,9 @@ public class UserHandler extends HttpServlet {
             }
             //registration
             else if(request.getParameter("mode").equals("registration")) {
-                //TODO save new user in database
+                //TODO plukke ut info
+                //TODO sjekke om bruker registrert allerede
+                //TODO legge til ny bruker
             }
             
 
@@ -114,11 +116,8 @@ public class UserHandler extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-public boolean checkIfUserExists(String name, String email) throws SQLException, FileNotFoundException, IOException {
-    MysqlAdapter md = new MysqlAdapter();
-    
-    return md.checkIfNameExists(name);
-
-}
-
+    public boolean checkIfUserExists(String name, String email) throws SQLException, FileNotFoundException, IOException {
+        MysqlAdapter md = new MysqlAdapter();
+        return (md.checkIfNameExists(name) || md.checkIfEmailExists(email)) ? true : false;
+    }
 }
