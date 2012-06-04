@@ -8,7 +8,7 @@
         <div class="register_area">
             
             <div class="register_box">
-                <form action="login?mode=register" method="post" name="register_form" onsubmit="return checkRegInfo()">
+                <form action="user?mode=register" method="post" name="register_form" onsubmit="return checkRegInfo()">
                 
                     <div id="register_form_wrong_message" class="wrong_message"></div>
                     <label name="lbl_name" id="id_lbl_name">Username:</label><br />
