@@ -116,7 +116,8 @@ public class UserHandler extends HttpServlet {
 
 public boolean checkIfUserExists(String name, String email) throws SQLException, FileNotFoundException, IOException {
     MysqlAdapter md = new MysqlAdapter();
-    return md.getUserByName(name);
+    
+    return md.checkIfNameExists(name);
 
 }
 

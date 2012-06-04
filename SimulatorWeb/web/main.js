@@ -43,7 +43,11 @@ function addWindow(id) {
     surface.appendChild(newElement);
     windowCounter++;
 }
-
+/**
+ * Sjekker at brukernavn eller epost er allerede registrert
+ * Sjekker at password stememr i begge feltene
+ * Sjekker at emeil har valid format og stemmer i begge feltene
+ */
 function checkRegInfo() {
     var name = document.getElementById('id_name').value;//funker
     var email1 = document.getElementById('id_mail1').value;//funker
@@ -70,7 +74,7 @@ function checkRegInfo() {
         document.getElementById('id_lbl_pass2').style.color = 'red';
         return false;
     }
-    //sjekker om email er valid
+    //sjekker om email har valid format
     var regex = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
     if(email1.match(regex) == null) {
         document.getElementById('register_form_wrong_message').innerHTML = "Email invalid";
@@ -80,9 +84,14 @@ function checkRegInfo() {
     
     //sjekker om brukernavn eller epost er registrert allerede
     var output = ajaxCheck(name,email1);
-    document.getElementById('register_form_wrong_message').innerHTML = output;//funker
+    if(output == "true") {
+        document.getElementById('register_form_wrong_message').innerHTML = "username or email exists";//funker
+        return false;
+    }
+    return true;
+    
 
-    return false;
+    
 }
 
 

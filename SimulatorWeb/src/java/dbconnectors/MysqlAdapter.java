@@ -24,22 +24,22 @@ public class MysqlAdapter {
     private String pass;
     private Statement stmt;
     private PreparedStatement pstmt;
+    Config conf;
     
     /**
-     * Main constructor
-     * @throws FileNotFoundException
-     * @throws IOException 
+     * Constructor open connection to database 
+     * uses setting from config.properties
      */
     public MysqlAdapter() throws FileNotFoundException, IOException {
         try {
-            Config conf = new Config();
+            conf = new Config();
             Class.forName("com.mysql.jdbc.Driver");
-            url = "jdbc:mysql://kark.hin.no:3306/aspen_v12";
-            name = "aspen_v12";
-            pass = "aspen@hinv12";
+            url = conf.getParameter("db.host")+conf.getParameter("db.name");
+            name = conf.getParameter("db.user");
+            pass = conf.getParameter("db.pass");
             con = (Connection) DriverManager.getConnection(url,name, pass);
             stmt = con.createStatement();
-            pstmt = (PreparedStatement) con.prepareStatement("SELECT * FROM users WHERE user=?");
+            
             
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
@@ -49,19 +49,43 @@ public class MysqlAdapter {
         
     }
     
-    public boolean getUserByName(String name) throws SQLException {
+    /**
+     * 
+     * @param name name of user which must be checked
+     * @return true if user exists in database, otherwise false
+     * @throws SQLException if any SQLException throws
+     */
+    public boolean checkIfNameExists(String name) throws SQLException {
+        pstmt = (PreparedStatement) con.prepareStatement("SELECT * FROM users WHERE user=?");
         pstmt.setString(1, name);
-        //String query = "SELECT * FROM users WHERE user=\""+name+"\"";
-        //ResultSet executeQuery = stmt.executeQuery(query);
         ResultSet executeQuery = pstmt.executeQuery();
-        return executeQuery.next(); 
-        
+        return executeQuery.next();        
+    }
+    
+    /**
+     * 
+     * @param email email of user which must be checked
+     * @return true if email exists in database, false - otherwise
+     * @throws SQLException if any SQLException throws
+     */
+    public boolean checkIfEmailExists(String email) throws SQLException {
+        pstmt = (PreparedStatement) con.prepareStatement("SELECT * FROM users WHERE email=?");
+        pstmt.setString(1, email);
+        ResultSet executeQuery = pstmt.executeQuery();
+        return executeQuery.next();   
     }
     
     //test
     public static void main(String[] args) throws SQLException, FileNotFoundException, IOException {
-        MysqlAdapter ms = new MysqlAdapter();
-        ms.getUserByName("Timur");
+        MysqlAdapter ms = null;
+        try {
+            ms = new MysqlAdapter();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ms.checkIfNameExists("Timur");
     }
     
 }

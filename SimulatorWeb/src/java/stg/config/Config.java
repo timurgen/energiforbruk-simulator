@@ -36,29 +36,25 @@ public class Config {
     
     /**
      * Constructor
-     * cipherkey inne ikke forandre mens det finnes noe 
+     * cipherkey inne, ikke forandre nøkkel mens det finnes noe inne fila  
      */
     public Config() throws FileNotFoundException, IOException {//passphrase inne
        tea = new TEA("A roza upala na lapu mogvaya".getBytes());
        properties = new Properties();
        properties.load(Config.class.getResourceAsStream("config.properties"));
-
     }
     
     /**
-     * returns value from config file
+     * returns decrypted value from config file
      * @param key
      * @return value of given key
      */
     public String getParameter(String key) {
         String value = this.findValue(key);
         StringTokenizer st = new StringTokenizer(value,",");
-        //ArrayList<Byte> a = new ArrayList<Byte>();
         byte[] a = new byte[st.countTokens()];
         int i = 0;
-       
         while(st.hasMoreTokens()) {
-            //a.add(Byte.valueOf(st.nextToken()));
             a[i++] = Byte.valueOf(st.nextToken());
         }
         value = decryptValue(a);
@@ -67,18 +63,18 @@ public class Config {
     
     
     /**
-     * 
+     * returns value of given key (encrypted)
      * @param key
-     * @return 
+     * @return encrypted value of given key
      */
     private String findValue(String key) {
        return properties.getProperty(key); 
-       //return "0,0,0,5,110,-123,-69,-4,-31,114,28,-6"; 
     }
+    
     /**
-     * 
-     * @param key
-     * @return 
+     * decrypts given data 
+     * @param crypted  - encrypted data
+     * @return decrypted data as string
      */
     private String decryptValue(byte[] crypted) {
         byte[] decrypted = tea.decrypt(crypted);
@@ -87,9 +83,9 @@ public class Config {
     }
     
     /**
-     * 
-     * @param value
-     * @return 
+     * Encrypts given string
+     * @param value string that must be encrypted
+     * @return encrypted data as byte array
      */
     private byte[] encryptValue(String value) {
         byte[] original = value.getBytes();
@@ -97,6 +93,12 @@ public class Config {
         return crypted;
     }
     
+    /**
+     * Saves property file
+     * @param key
+     * @param value
+     * @throws IOException 
+     */
     public void saveProperty(String key, String value) throws IOException {
         byte[] cryptedValue = encryptValue(value);
         String cVal ="";
@@ -116,7 +118,11 @@ public class Config {
      */
     public static void main(String[] args) throws IOException {
         Config c = new Config();
-        c.saveProperty("megaher", "pussy");
+        c.saveProperty("db.host", "jdbc:mysql://kark.hin.no:3306/");
+        c.saveProperty("db.name", "aspen_v12");
+        c.saveProperty("db.user", "aspen_v12");
+        c.saveProperty("db.pass", "aspen@hinv12");
+        c.saveProperty("db.salt", "yKertJNPG8¤(ghfj=&%dzxjkKLGedjmnGEker4ikrtuyEFG");
     }
 
 }
