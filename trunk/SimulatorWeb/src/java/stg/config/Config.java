@@ -38,7 +38,7 @@ public class Config {
      * Constructor
      * cipherkey inne, ikke forandre nøkkel mens det finnes noe inne fila  
      */
-    public Config() throws FileNotFoundException, IOException {//passphrase inne
+    public Config() throws IOException {//passphrase inne
        tea = new TEA("A roza upala na lapu mogvaya".getBytes());
        properties = new Properties();
        properties.load(Config.class.getResourceAsStream("config.properties"));

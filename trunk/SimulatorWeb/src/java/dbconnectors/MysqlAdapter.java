@@ -5,6 +5,8 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,7 +32,7 @@ public class MysqlAdapter {
      * Constructor open connection to database 
      * uses setting from config.properties
      */
-    public MysqlAdapter() throws FileNotFoundException, IOException {
+    public MysqlAdapter() throws IOException {
         try {
             conf = new Config();
             Class.forName("com.mysql.jdbc.Driver");
@@ -38,15 +40,12 @@ public class MysqlAdapter {
             name = conf.getParameter("db.user");
             pass = conf.getParameter("db.pass");
             con = (Connection) DriverManager.getConnection(url,name, pass);
-            stmt = con.createStatement();
-            
-            
+            //stmt = con.createStatement();     bruker prepared statements i stedet for              
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
         } catch(SQLException e) {
             Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, e);
-        }
-        
+        }    
     }
     
     /**
@@ -75,8 +74,82 @@ public class MysqlAdapter {
         return executeQuery.next();   
     }
     
+    /**
+     * Saves new user in database
+     * @param name usernamr
+     * @param email - brukerens epost
+     * @param password - passord til bruker
+     * @return
+     * @throws Exception if user or email exist in database
+     */
+    public boolean addUserToDataBase(String name, String email, String password) throws Exception {
+        //Sjekker alt en gang til
+        if(checkIfNameExists(name))
+            throw new Exception("username exixts in database");
+        if(checkIfEmailExists(email))
+            throw new Exception("email exists in database");
+        String passHash = getHash(password);
+        pstmt = (PreparedStatement) con.prepareStatement("INSERT INTO users (user, passwd, email) values(?,?,?)");
+        pstmt.setString(1, name);
+        pstmt.setString(2, passHash);
+        pstmt.setString(3, email);
+        pstmt.executeUpdate();
+        return true;
+    }
+    
+    /**
+     * returns md5 hash (salted) of given data
+     * @param data data to hashing
+     * @return md5 hasho of given data
+     * @throws NoSuchAlgorithmException
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
+    private String getHash(String data) throws IOException {
+        //password hashing and salting
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        md.reset();
+        String salt = conf.getParameter("db.salt");
+        String s = data+salt+data+salt; //hemmelig saltingsmetode
+        byte[] passByte = s.getBytes();
+        byte[] hash = md.digest(passByte);
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < hash.length; i++) {
+            result.append(Integer.toHexString(0xFF & hash[i]));
+	}
+        return result.toString();  
+    }
+    
+    /**
+     * 
+     * @param name name of user 
+     * @param password password  
+     * @return id for autentificated user or <strong>-1</strong> if user does not exist
+     * @throws NoSuchAlgorithmException
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws SQLException 
+     */
+    public int autentificateUser(String name, String password) throws IOException, SQLException {
+        password = getHash(password);
+        pstmt = (PreparedStatement) con.prepareStatement("SELECT id FROM users WHERE user = ? AND passwd = ?");
+        pstmt.setString(1, name);
+        pstmt.setString(2, password);
+        ResultSet result = pstmt.executeQuery();
+        if(result.next()) {
+            return result.getInt(1);
+        }
+        else return -1;        
+    }
+    
+    
     //test
-    public static void main(String[] args) throws SQLException, FileNotFoundException, IOException {
+    public static void main(String[] args) throws SQLException, IOException, Exception {
         MysqlAdapter ms = null;
         try {
             ms = new MysqlAdapter();
@@ -85,7 +158,11 @@ public class MysqlAdapter {
         } catch (IOException ex) {
             Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
         }
-        ms.checkIfNameExists("Timur");
+        int a = ms.autentificateUser("tim", "padss");
+       
+        System.out.println(a);
     }
+    
+    
     
 }
