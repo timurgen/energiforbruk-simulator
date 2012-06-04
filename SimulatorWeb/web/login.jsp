@@ -6,7 +6,8 @@
 --%>
 
 
-        <%@include file='header.jsp'%>
+        <%@include file="WEB-INF/jspf/header.jspf"%>
+        <%-- body here --%>
         <div class="login_area">
             
             <div class="login_box">
@@ -21,4 +22,9 @@
             </div>
         </div>
         
-        <%@include file="footer.jsp" %> 
+        <%-- end of body --%>
+        <%@include file="WEB-INF/jspf/footer.jspf"%>
+        
+        
+
+

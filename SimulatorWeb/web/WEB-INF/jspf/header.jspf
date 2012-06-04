@@ -19,7 +19,7 @@
             <div class="menu_element"><a class="button" href="index.jsp"><span>Main page</span></a></div>
             <div class="menu_element"><a class="button" href="about.jsp"><span>About</span></a></div>
             <%
-                if(session.getAttribute("username") != null) {
+                if(session.getAttribute("id") != null) {
             %>
             <div class="menu_element"><a class="button" href="addgame.jsp"><span>Create game</span></a></div>
             <div class="menu_element"><a class="button" href="login?mode=logout"><span>Log out</span></a></div>
