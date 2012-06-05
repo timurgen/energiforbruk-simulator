@@ -3,12 +3,14 @@
  xmlns="http://schemas.xmlsoap.org/wsdl/" 
  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
- xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="NewWebService" targetNamespace="http://services.stg/" xmlns:tns="http://services.stg/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:fi="http://java.sun.com/xml/ns/wsit/2006/09/policy/fastinfoset/service" xmlns:tcp="http://java.sun.com/xml/ns/wsit/2006/09/policy/soaptcp/service" xmlns:wsoma="http://schemas.xmlsoap.org/ws/2004/09/policy/optimizedmimeserialization" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsrm="http://docs.oasis-open.org/ws-rx/wsrmp/200702" xmlns:wsat="http://schemas.xmlsoap.org/ws/2004/10/wsat" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="NewWebService" targetNamespace="http://services.stg/" xmlns:tns="http://services.stg/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:fi="http://java.sun.com/xml/ns/wsit/2006/09/policy/fastinfoset/service" xmlns:tcp="http://java.sun.com/xml/ns/wsit/2006/09/policy/soaptcp/service" xmlns:wsoma="http://schemas.xmlsoap.org/ws/2004/09/policy/optimizedmimeserialization" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsrm="http://docs.oasis-open.org/ws-rx/wsrmp/200702" xmlns:wsat="http://schemas.xmlsoap.org/ws/2004/10/wsat" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:sc="http://schemas.sun.com/2006/03/wss/server" xmlns:wspp="http://java.sun.com/xml/ns/wsit/policy" 
  >
     <message name="hello"/>
     <message name="helloResponse"/>
     <message name="autentificate"/>
     <message name="autentificateResponse"/>
+    <message name="getStandart"/>
+    <message name="getStandartResponse"/>
     <portType name="NewWebService">
         <operation name="hello">
             <input message="tns:hello"/>
@@ -18,15 +20,23 @@
             <input message="tns:autentificate"/>
             <output message="tns:autentificateResponse"/>
         </operation>
+        <operation name="getStandart">
+            <input message="tns:getStandart"/>
+            <output message="tns:getStandartResponse"/>
+        </operation>
     </portType>
     <binding name="NewWebServicePortBinding" type="tns:NewWebService">
         <wsp:PolicyReference URI="#NewWebServicePortBindingPolicy"/>
         <operation name="hello">
-            <input/>
-            <output/>
+            <input></input>
+            <output></output>
         </operation>
         <operation name="autentificate">
             <wsp:PolicyReference URI="#NewWebServicePortBinding_autentificate_Policy"/>
+            <input></input>
+            <output></output>
+        </operation>
+        <operation name="getStandart">
             <input/>
             <output/>
         </operation>
@@ -34,15 +44,18 @@
     <service name="NewWebService">
         <port name="NewWebServicePort" binding="tns:NewWebServicePortBinding"/>
     </service>
-    <wsp:Policy wsu:Id="NewWebServicePortBindingPolicy">
-        <wsp:ExactlyOne>
-            <wsp:All/>
-        </wsp:ExactlyOne>
-    </wsp:Policy>
     <wsp:Policy wsu:Id="NewWebServicePortBinding_autentificate_Policy">
         <wsp:ExactlyOne>
             <wsp:All>
                 <wsat:ATAssertion wsp:Optional="true"/>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="NewWebServicePortBindingPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <wsam:Addressing wsp:Optional="false"/>
+                <wsrm:RMAssertion/>
             </wsp:All>
         </wsp:ExactlyOne>
     </wsp:Policy>
