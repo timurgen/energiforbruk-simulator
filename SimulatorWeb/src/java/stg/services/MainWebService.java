@@ -27,19 +27,31 @@ public class MainWebService {
             md = new MysqlAdapter();
            return String.valueOf(md.autentificateUser(username, password));
         } catch (IOException ex) {
-            
+            Logger.getLogger(MainWebService.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } catch(SQLException ex) {
             Logger.getLogger(MainWebService.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-         return null;
+         
     }
 
     /**
-     * Web service operation
+     * Web service operation return  u values for given standart
      */
     @WebMethod(operationName = "getStandart")
-    public Double[] getStandart(@WebParam(name = "name") String name) {
-        //TODO write your implementation code here:
-        return null;
+    public double[] getStandart(@WebParam(name = "name") String name) {
+        MysqlAdapter md;
+        try {
+            md = new MysqlAdapter();
+           return md.getStandartValues(name);
+        } catch (IOException ex) {
+            Logger.getLogger(MainWebService.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } catch(SQLException ex) {
+            Logger.getLogger(MainWebService.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+         
     }
 }
