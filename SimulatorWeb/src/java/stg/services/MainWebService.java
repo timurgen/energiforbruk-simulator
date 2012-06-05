@@ -18,7 +18,7 @@ import javax.jws.WebService;
 public class MainWebService {
 
     /**
-     * autentificate operation
+     * autentificate operation, returns user ID(int) or -1 if user des not exist or password is invalid
      */
     @WebMethod(operationName = "autentificate")
     public String autentificate(@WebParam(name = "username") String username, @WebParam(name = "password") String password) {
@@ -32,5 +32,14 @@ public class MainWebService {
             Logger.getLogger(MainWebService.class.getName()).log(Level.SEVERE, null, ex);
         }
          return null;
+    }
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "getStandart")
+    public Double[] getStandart(@WebParam(name = "name") String name) {
+        //TODO write your implementation code here:
+        return null;
     }
 }

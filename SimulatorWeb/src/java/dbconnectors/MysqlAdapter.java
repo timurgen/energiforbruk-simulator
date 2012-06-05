@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -151,19 +152,36 @@ public class MysqlAdapter {
     }
     
     /**
-     * returns all standarts with u-values from database
+     * returns all names of buildings standarts from database
      */
-    public void getStandarts() throws SQLException {
-        UValues row = new UValues();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SimulatorWebPU");
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction trn = em.getTransaction();
-        trn.begin();
-        javax.persistence.Query query = em.createNamedQuery("UValues.findAll");
-        List result = query.getResultList();
-        
-        
-        
+    public ArrayList<String> getStandarts() throws SQLException {
+        pstmt = (PreparedStatement) con.prepareStatement("SELECT name FROM u_values");
+        ResultSet result = pstmt.executeQuery();
+        ArrayList<String> res = new ArrayList<String>();
+        while(result.next()) {
+            res.add(result.getString(1));
+        }
+        return res;
+    }
+    
+    /**
+     * Return  u values for given standart
+     * @param stdName navn til byggestandard
+     * @return u-verdier som tilhører gitt standard
+     * @throws SQLException 
+     */
+    public double[] getStandartValues(String stdName) throws SQLException {
+        pstmt = (PreparedStatement) con.prepareStatement("SELECT outer_wall, roof, floor, doors_and_windows FROM u_values WHERE name = ?");
+        pstmt.setString(1, stdName);
+        ResultSet result = pstmt.executeQuery();
+        if(result.next()) {
+            double[] res = new double[4];
+            for(int i = 0; i<4; i++) {
+                res[i] = result.getDouble(i+1);
+            }
+            return res;
+        }
+        return null;
     }
     
     //*******************************************test**************************************//
@@ -176,8 +194,9 @@ public class MysqlAdapter {
         } catch (IOException ex) {
             Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
         }
-        ms.getStandarts();
+        ArrayList<String> res = ms.getStandarts();
+        
        
-        System.out.println();
+        System.out.println(res.get(1));
     } 
 }
