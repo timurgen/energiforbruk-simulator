@@ -4,8 +4,6 @@
     Author     : 490501
     Description: Login page
 --%>
-
-
         <%@include file="WEB-INF/jspf/header.jspf"%>
         <%-- body here --%>
         <div class="login_area">
