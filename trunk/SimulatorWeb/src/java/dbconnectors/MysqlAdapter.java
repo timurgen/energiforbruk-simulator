@@ -3,7 +3,6 @@ package dbconnectors;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
-import com.mysql.jdbc.Statement;
 import ejb.UValues;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,7 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.management.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
