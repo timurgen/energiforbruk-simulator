@@ -3,6 +3,7 @@ package dbconnectors;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+import com.mysql.jdbc.Statement;
 import ejb.UValues;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,8 +12,14 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.management.Query;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 import stg.config.Config;
 
 /**
@@ -25,7 +32,7 @@ public class MysqlAdapter {
     private String name;
     private String pass;
     private PreparedStatement pstmt;
-    Config conf;
+    private Config conf;
     
     /**
      * Constructor open connection to database 
@@ -101,8 +108,6 @@ public class MysqlAdapter {
      * returns md5 hash (salted) of given data
      * @param data data to hashing
      * @return md5 hasho of given data
-     * @throws NoSuchAlgorithmException
-     * @throws FileNotFoundException
      * @throws IOException 
      */
     private String getHash(String data) throws IOException {
@@ -152,6 +157,14 @@ public class MysqlAdapter {
      */
     public void getStandarts() throws SQLException {
         UValues row = new UValues();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SimulatorWebPU");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction trn = em.getTransaction();
+        trn.begin();
+        javax.persistence.Query query = em.createNamedQuery("UValues.findAll");
+        List result = query.getResultList();
+        
+        
         
     }
     
@@ -165,8 +178,8 @@ public class MysqlAdapter {
         } catch (IOException ex) {
             Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
         }
-        int a = ms.autentificateUser("tim", "padss");
+        ms.getStandarts();
        
-        System.out.println(a);
+        System.out.println();
     } 
 }
