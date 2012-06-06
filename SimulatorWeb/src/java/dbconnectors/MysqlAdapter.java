@@ -3,8 +3,6 @@ package dbconnectors;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
-import ejb.UValues;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -12,13 +10,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import stg.config.Config;
 
 /**
@@ -31,26 +24,29 @@ public class MysqlAdapter {
     private String name;
     private String pass;
     private PreparedStatement pstmt;
+    /**
+     * 
+     */
     private Config conf;
     
     /**
      * Constructor open connection to database 
      * uses setting from config.properties
      */
-    public MysqlAdapter() throws IOException {
+    public MysqlAdapter() {
         try {
-            
             conf = new Config();
             Class.forName("com.mysql.jdbc.Driver");
             url = conf.getParameter("db.host")+conf.getParameter("db.name");
             name = conf.getParameter("db.user");
             pass = conf.getParameter("db.pass");
-            con = (Connection) DriverManager.getConnection(url,name, pass);
-            //stmt = con.createStatement();     bruker prepared statements i stedet for              
+            con = (Connection) DriverManager.getConnection(url,name, pass);          
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
-        } catch(SQLException e) {
-            Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, e);
+        } catch(SQLException ex) {
+            Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
+        } catch(IOException ex) {
+            Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
         }    
     }
     
@@ -106,11 +102,10 @@ public class MysqlAdapter {
     /**
      * returns md5 hash (salted) of given data
      * @param data data to hashing
-     * @return md5 hasho of given data
-     * @throws IOException 
+     * @return md5 hash of given data
+     * @throws IOException if any IO exceptions oppstår
      */
     private String getHash(String data) throws IOException {
-        //password hashing and salting
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("MD5");
@@ -152,7 +147,7 @@ public class MysqlAdapter {
     }
     
     /**
-     * returns all names of buildings standarts from database
+     * returns all names of buildings standarts from database u_values
      */
     public ArrayList<String> getStandarts() throws SQLException {
         pstmt = (PreparedStatement) con.prepareStatement("SELECT name FROM u_values");
@@ -168,7 +163,7 @@ public class MysqlAdapter {
      * Return  u values for given standart
      * @param stdName navn til byggestandard
      * @return u-verdier som tilhører gitt standard
-     * @throws SQLException 
+     * @throws SQLException if any SQL exception throws
      */
     public double[] getStandartValues(String stdName) throws SQLException {
         pstmt = (PreparedStatement) con.prepareStatement("SELECT outer_wall, roof, floor, doors_and_windows FROM u_values WHERE name = ?");
@@ -186,17 +181,8 @@ public class MysqlAdapter {
     
     //*******************************************test**************************************//
     public static void main(String[] args) throws SQLException, IOException, Exception {
-        MysqlAdapter ms = null;
-        try {
-            ms = new MysqlAdapter();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MysqlAdapter.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        MysqlAdapter ms  = new MysqlAdapter();
         ArrayList<String> res = ms.getStandarts();
-        
-       
         System.out.println(res.get(1));
     } 
 }
