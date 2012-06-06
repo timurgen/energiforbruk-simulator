@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.security.DeclareRoles;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,6 +34,7 @@ public class UserHandler extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+        ServletContext srvCon = request.getServletContext();
         
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
@@ -60,7 +63,34 @@ public class UserHandler extends HttpServlet {
             }
             //login
             else if(request.getParameter("mode").equals("login")) {
-                //TODO login check, session creating osv
+                if(request.getParameter("name") == null|request.getParameter("pass") == null) {
+                    out.println("name or password are equal to null");
+                    return;
+                }
+                String name = (String)request.getParameter("name");
+                String pass= (String)request.getParameter("pass");
+                int id = -1;
+                try {
+                    id = autentificatUser(name, pass);
+                } catch (SQLException ex) {
+                    Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                switch(id) {
+                    case -1:
+                        //TODO invalid navn eller passord send to error page
+                        break;
+                    case 1|2|3|4|5:
+                        //TODO admins
+                        return;
+                    default:
+                        //TODOvanlig bruker
+                        //@DeclareRoles("autentificated_user")
+                        
+                        
+                }
+                 
+                
+                
             }
             //registration
             else if(request.getParameter("mode").equals("registration")) {
@@ -116,8 +146,13 @@ public class UserHandler extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    public boolean checkIfUserExists(String name, String email) throws SQLException, FileNotFoundException, IOException {
+    private boolean checkIfUserExists(String name, String email) throws SQLException, FileNotFoundException, IOException {
         MysqlAdapter md = new MysqlAdapter();
         return (md.checkIfNameExists(name) || md.checkIfEmailExists(email)) ? true : false;
+    }
+    
+    private int autentificatUser(String name, String pass) throws IOException, SQLException {
+        MysqlAdapter md = new MysqlAdapter();
+        return md.autentificateUser(name, pass);
     }
 }

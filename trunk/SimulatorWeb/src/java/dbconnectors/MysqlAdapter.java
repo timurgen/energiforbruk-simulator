@@ -3,6 +3,7 @@ package dbconnectors;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
 import stg.config.Config;
 
 /**
- * Class håndterer alle operasjoner som er knyttet til databaser , alle forespørsler ligger her 
+ * Class håndterer <strong>alle</strong> operasjoner som er knyttet til databaser , alle forespørsler ligger her 
  * @author 490501
  */
 public class MysqlAdapter {
