@@ -9,7 +9,8 @@
         <div class="login_area">
             
             <div class="login_box">
-                <form action="login?mode=login" method="post" name="login_form">
+                <form action="user?mode=login" method="post" name="login_form">
+                    
                     <label name="lbl_name" id="id_lbl_name">Username:</label>
                     <input class="login" type="text" name="name"/><br />
                     <label name="lbl_pass" id="id_lbl_pass">Password:</label>
