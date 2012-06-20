@@ -4,16 +4,17 @@ import dbconnectors.MysqlAdapter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.security.DeclareRoles;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Denne servlet håndterer alle operasjoner som er knyttet til brukere
@@ -61,42 +62,46 @@ public class UserHandler extends HttpServlet {
                 } 
                 
             }
-            //login
+            //login request
             else if(request.getParameter("mode").equals("login")) {
                 if(request.getParameter("name") == null|request.getParameter("pass") == null) {
                     out.println("name or password are equal to null");
                     return;
                 }
                 String name = (String)request.getParameter("name");
-                String pass= (String)request.getParameter("pass");
+                String pass = (String)request.getParameter("pass");
                 int id = -1;
                 try {
                     id = autentificatUser(name, pass);
                 } catch (SQLException ex) {
                     Logger.getLogger(UserHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    response.sendRedirect("error.jsp?msg=Ooops");
                 }
-                switch(id) {
-                    case -1:
-                        //TODO invalid navn eller passord send to error page
-                        break;
-                    case 1|2|3|4|5:
-                        //TODO admins
-                        return;
-                    default:
-                        //TODOvanlig bruker
-                        //@DeclareRoles("autentificated_user")
-                        
-                        
+                if(id == -1) {
+                    response.sendRedirect("error.jsp?msg="+URLEncoder.encode("User name not found or password is invalid!", "UTF-8"));
                 }
-                 
-                
-                
+                else if (id <= 0) {
+                    //TODO error
+                }
+                else {
+                    //TODO registrerer session, role osv
+                    HttpSession sess = request.getSession();
+                    sess.setAttribute("id", id);
+                    //sess.setAttribute("username", name);
+                    response.sendRedirect("home.jsp");  
+                }
             }
             //registration
             else if(request.getParameter("mode").equals("registration")) {
                 //TODO plukke ut info
                 //TODO sjekke om bruker registrert allerede
                 //TODO legge til ny bruker
+            }
+            
+            //logout
+            else if(request.getParameter("mode").equals("logout")) {
+                request.getSession().invalidate();
+                response.sendRedirect("index.jsp");  
             }
             
 
@@ -155,4 +160,5 @@ public class UserHandler extends HttpServlet {
         MysqlAdapter md = new MysqlAdapter();
         return md.autentificateUser(name, pass);
     }
+
 }

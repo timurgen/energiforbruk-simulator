@@ -43,11 +43,8 @@ public class MainWebService {
     public double[] getStandart(@WebParam(name = "name") String name) {
         MysqlAdapter md;
         try {
-            md = new MysqlAdapter();
+           md = new MysqlAdapter();
            return md.getStandartValues(name);
-        } catch (IOException ex) {
-            Logger.getLogger(MainWebService.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
         } catch(SQLException ex) {
             Logger.getLogger(MainWebService.class.getName()).log(Level.SEVERE, null, ex);
             return null;

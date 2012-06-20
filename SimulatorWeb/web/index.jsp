@@ -6,5 +6,6 @@
 <%@include file="WEB-INF/jspf/header.jspf"%>
 <%-- body here --%>
 
+
 <%-- end of body --%>
 <%@include file="WEB-INF/jspf/footer.jspf"%>
