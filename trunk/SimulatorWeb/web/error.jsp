@@ -6,6 +6,10 @@
 
 <%@include file="WEB-INF/jspf/header.jspf"%>
 <%-- body here --%>
-
+<%
+    if(request.getParameter("msg") != null) {
+        out.print(request.getParameter("msg"));
+    }
+%>
 <%-- end of body --%>
 <%@include file="WEB-INF/jspf/footer.jspf"%>

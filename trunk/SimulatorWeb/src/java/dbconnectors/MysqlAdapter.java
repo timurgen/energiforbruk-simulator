@@ -26,7 +26,7 @@ public class MysqlAdapter {
     private String pass;
     private PreparedStatement pstmt;
     /**
-     * 
+     * Config fil som inneholder cryptert konfigurasjon av applikasjon
      */
     private Config conf;
     
@@ -115,7 +115,7 @@ public class MysqlAdapter {
         }
         md.reset();
         String salt = conf.getParameter("db.salt");
-        String s = data+salt+data+salt; //hemmelig saltingsmetode
+        String s = data+salt+data+salt; //security through obscurity
         byte[] passByte = s.getBytes();
         byte[] hash = md.digest(passByte);
         StringBuilder result = new StringBuilder();
@@ -171,14 +171,16 @@ public class MysqlAdapter {
         pstmt.setString(1, stdName);
         ResultSet result = pstmt.executeQuery();
         if(result.next()) {
-            double[] res = new double[4];
-            for(int i = 0; i<4; i++) {
+            int size = result.getMetaData().getColumnCount();
+            double[] res = new double[size];
+            for(int i = 0; i < size; i++) {
                 res[i] = result.getDouble(i+1);
             }
             return res;
         }
         return null;
     }
+    
     
     //*******************************************test**************************************//
     public static void main(String[] args) throws SQLException, IOException, Exception {
