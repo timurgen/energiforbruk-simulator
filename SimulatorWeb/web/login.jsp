@@ -9,12 +9,12 @@
         <div class="login_area">
             
             <div class="login_box">
-                <form action="user?mode=login" method="post" name="login_form">
+                <form action="j_security_check" method="post" name="login_form">
                     
                     <label name="lbl_name" id="id_lbl_name">Username:</label>
-                    <input class="login" type="text" name="name"/><br />
+                    <input class="login" type="text" name="j_username"/><br />
                     <label name="lbl_pass" id="id_lbl_pass">Password:</label>
-                    <input class="login" type="password" name="pass"/><br/>
+                    <input class="login" type="password" name="j_password"/><br/>
                     <input type="submit" value="Log in" name="btn_login" />
                     <a href="register.jsp">Sign up</a>
                 </form>
