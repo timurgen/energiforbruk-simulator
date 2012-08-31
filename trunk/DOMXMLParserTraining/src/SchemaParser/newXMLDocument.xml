@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<project
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xsi:noNamespaceSchemaLocation='simple.xsd'>
+    <description>
+        <project-name>Her</project-name>
+        <project-author>Suka</project-author>
+        <project-creation-date>2002-02-24</project-creation-date>
+        <project-version>1.0.0.0</project-version>
+    </description>
+    <unit>
+        <mode>simple</mode>
+        <area>5000.0</area>
+    </unit>
+
+</project>

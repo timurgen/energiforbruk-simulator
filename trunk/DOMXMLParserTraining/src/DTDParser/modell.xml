@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project SYSTEM "modell.dtd">
+
+
+<project>
+    <description>
+        <project-name>Test</project-name>
+        <project-owner>Timur Samkharadze</project-owner>
+        <creation-date>08.09.1983</creation-date>
+        <project-version>1.0.0</project-version>
+    </description>
+    <unit>
+        <area>50</area>
+        <volume>150</volume>
+        <class>TEC-69</class>
+    </unit>
+    <profile>
+    </profile>
+</project>
