@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary identification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/modell.dtd
+
+-->
+
+<!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE project SYSTEM "modell.dtd">
+
+    <project>
+    ...
+    </project>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT project (profile|unit|description)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT description (project-version|creation-date|project-owner|project-name)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT project-name (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT project-owner (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT creation-date (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT project-version (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT unit (class|volume|area)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT area (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT volume (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT class (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT profile EMPTY>
